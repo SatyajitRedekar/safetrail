@@ -80,6 +80,37 @@ function Dashboard() {
           </div>
         </div>
 
+        {/* Live Map Section */}
+        <div style={{
+          margin: '20px 0 30px 0',
+          borderRadius: '12px',
+          overflow: 'hidden',
+          border: '2px solid #1a237e',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+        }}>
+          <div style={{
+            backgroundColor: '#1a237e',
+            padding: '10px 20px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <span style={{ color: 'white', fontWeight: 'bold' }}>
+              📍 LIVE TOURIST TRACKING MAP — NORTHEAST INDIA
+            </span>
+            <span style={{ color: '#4fc3f7', fontSize: '12px' }}>
+              🟢 TRACKING ACTIVE
+            </span>
+          </div>
+          <iframe
+            src="https://www.openstreetmap.org/export/embed.html?bbox=88.0%2C22.0%2C97.5%2C29.5&layer=mapnik"
+            width="100%"
+            height="400"
+            style={{ border: 'none', display: 'block' }}
+            title="Northeast India Map"
+          />
+        </div>
+
         {/* Tables Section */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
           

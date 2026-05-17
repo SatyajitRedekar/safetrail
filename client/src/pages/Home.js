@@ -5,6 +5,7 @@ import { useLanguage } from '../LanguageContext';
 const translations = {
   English: { title: "SafeTrail", subtitle: "Smart Tourist Safety Monitoring System", desc: "Ensuring secure journeys across Northeast India.", btnReg: "Tourist Registration", btnDash: "Police Dashboard", btnSos: "Emergency SOS" },
   Hindi: { title: "सेफट्रेल (SafeTrail)", subtitle: "स्मार्ट पर्यटक सुरक्षा निगरानी प्रणाली", desc: "पूर्वोत्तर भारत भर में सुरक्षित यात्रा सुनिश्चित करना।", btnReg: "पर्यटक पंजीकरण", btnDash: "पुलिस डैशबोर्ड", btnSos: "आपातकालीन SOS" },
+  Marathi: { title: "सेफट्रेल (SafeTrail)", subtitle: "स्मार्ट पर्यटक सुरक्षा निरीक्षण प्रणाली", desc: "ईशान्य भारतात सुरक्षित प्रवास सुनिश्चित करणे.", btnReg: "पर्यटक नोंदणी", btnDash: "पोलीस डॅशबोर्ड", btnSos: "आणीबाणी SOS" },
   Bengali: { title: "সেফট্রেইল (SafeTrail)", subtitle: "স্মার্ট ট্যুরিস্ট সেফটি মনিটরিং সিস্টেম", desc: "উত্তর-পূর্ব ভারত জুড়ে নিরাপদ ভ্রমণ নিশ্চিত করা।", btnReg: "ট্যুরিস্ট রেজিস্ট্রেশন", btnDash: "পুলিশ ড্যাশবোর্ড", btnSos: "ইমার্জেন্সি SOS" },
   Assamese: { title: "ছেফট্রেইল (SafeTrail)", subtitle: "স্মাৰ্ট পৰ্যটক সুৰক্ষা নিৰীক্ষণ প্ৰণালী", desc: "উত্তৰ-পূব ভাৰতত নিৰাপদ যাত্ৰা নিশ্চিত কৰা।", btnReg: "পৰ্যটক পঞ্জীয়ন", btnDash: "আৰক্ষী ডেশ্ববৰ্ড", btnSos: "জৰুৰীকালীন SOS" }
 };

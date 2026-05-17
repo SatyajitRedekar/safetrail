@@ -43,6 +43,7 @@ function Navbar() {
           }}>
           <option value="English" style={{ color: 'black' }}>English</option>
           <option value="Hindi" style={{ color: 'black' }}>हिन्दी</option>
+          <option value="Marathi" style={{ color: 'black' }}>मराठी</option>
           <option value="Bengali" style={{ color: 'black' }}>বাংলা</option>
           <option value="Assamese" style={{ color: 'black' }}>অসমীয়া</option>
         </select>

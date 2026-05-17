@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useToast } from '../components/Toast';
+import Spinner from '../components/Spinner';
 
 function Register() {
+  const { addToast } = useToast();
   const [form, setForm] = useState({ name: '', email: '', phone: '', passport: '', emergencyContact: '' });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -14,8 +17,11 @@ function Register() {
     try {
       const res = await axios.post('https://safetrail-api-1pq5.onrender.com/api/tourists/register', form);
       setResult(res.data);
+      addToast('Tourist successfully registered!', 'success');
     } catch (err) {
-      setResult({ success: false, message: err.response?.data?.message || 'Error occurred' });
+      const errMsg = err.response?.data?.message || 'Registration failed';
+      setResult({ success: false, message: errMsg });
+      addToast(errMsg, 'error');
     }
     setLoading(false);
   };
@@ -65,9 +71,10 @@ function Register() {
                   width: '100%', padding: '16px', backgroundColor: '#1a237e', color: 'white', 
                   border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', 
                   cursor: loading ? 'not-allowed' : 'pointer', marginTop: '10px',
-                  boxShadow: '0 4px 12px rgba(26, 35, 126, 0.3)', transition: 'background 0.2s'
+                  boxShadow: '0 4px 12px rgba(26, 35, 126, 0.3)', transition: 'background 0.2s',
+                  display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px'
                 }}>
-                {loading ? 'Processing...' : 'Register Tourist Profile'}
+                {loading ? <><Spinner size={20} /> Processing...</> : 'Register Tourist Profile'}
               </button>
             </form>
           ) : result.success ? (

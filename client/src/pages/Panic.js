@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useToast } from '../components/Toast';
+import Spinner from '../components/Spinner';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -22,6 +24,7 @@ const redPulseIcon = new L.Icon({
 });
 
 function Panic() {
+  const { addToast } = useToast();
   const [digitalId, setDigitalId] = useState('');
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -45,12 +48,17 @@ function Panic() {
           digitalId, latitude: pos.coords.latitude, longitude: pos.coords.longitude
         });
         setStatus({ success: true, message: res.data.message });
+        addToast('SOS Alert Sent Successfully!', 'success');
       } catch (err) {
-        setStatus({ success: false, message: err.response?.data?.message || 'Error communicating with dispatch' });
+        const errMsg = err.response?.data?.message || 'Error communicating with dispatch';
+        setStatus({ success: false, message: errMsg });
+        addToast(errMsg, 'error');
       }
       setLoading(false);
     }, () => { 
-      setStatus({ success: false, message: 'CRITICAL: Location access denied. Enable GPS.' }); 
+      const gpsErr = 'CRITICAL: Location access denied. Enable GPS.';
+      setStatus({ success: false, message: gpsErr }); 
+      addToast(gpsErr, 'error');
       setLoading(false); 
     });
   };
@@ -138,10 +146,10 @@ function Panic() {
                 color: 'white', fontSize: '28px', fontWeight: '900', 
                 border: '8px solid #ffcdd2', cursor: loading ? 'not-allowed' : 'pointer', 
                 transition: 'all 0.2s', margin: '0 auto', display: 'flex',
-                alignItems: 'center', justifyContent: 'center',
+                alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '10px',
                 textShadow: '0 2px 4px rgba(0,0,0,0.5)'
               }}>
-              {loading ? 'SENDING...' : 'SOS'}
+              {loading ? <><Spinner size={30} /> <span style={{fontSize: '18px'}}>SENDING...</span></> : 'SOS'}
             </button>
           ) : (
             <div style={{ 

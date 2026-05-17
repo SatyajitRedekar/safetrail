@@ -5,21 +5,24 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Panic from './pages/Panic';
 import { LanguageProvider } from './LanguageContext';
+import { ToastProvider } from './components/Toast';
 import Navbar from './components/Navbar';
 import './App.css';
 
 function App() {
   return (
     <LanguageProvider>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/panic" element={<Panic />} />
-        </Routes>
-      </Router>
+      <ToastProvider>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/panic" element={<Panic />} />
+          </Routes>
+        </Router>
+      </ToastProvider>
     </LanguageProvider>
   );
 }
