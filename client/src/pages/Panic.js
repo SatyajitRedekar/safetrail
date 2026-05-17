@@ -1,73 +1,51 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-const Panic = () => {
-  const [status, setStatus] = useState('');
+function Panic() {
+  const [digitalId, setDigitalId] = useState('');
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handlePanic = async () => {
-    setStatus('SENDING');
-    try {
-      navigator.geolocation.getCurrentPosition(async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        await sendAlert(latitude, longitude);
-      }, async () => {
-        await sendAlert(26.1445, 91.7362);
-      });
-    } catch (err) {
-      console.error(err);
-      setStatus('ERROR');
-    }
-  };
-
-  const sendAlert = async (lat, lng) => {
-    try {
-      const res = await fetch('https://safetrail-api-1pq5.onrender.com/api/alerts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ touristId: '60d5f9f9b5c5a814a0d9b1a1', location: { lat, lng }, type: 'emergency' })
-      });
-      if (res.ok) {
-        setStatus('SENT');
-      } else {
-        setStatus('ERROR');
+    if (!digitalId) { alert('Please enter your Digital ID'); return; }
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      try {
+        const res = await axios.post('https://safetrail-api-1pq5.onrender.com/api/alerts/panic', {
+          digitalId, latitude: pos.coords.latitude, longitude: pos.coords.longitude
+        });
+        setStatus({ success: true, message: res.data.message });
+      } catch (err) {
+        setStatus({ success: false, message: err.response?.data?.message || 'Error' });
       }
-    } catch (err) {
-      setStatus('ERROR');
-    }
+      setLoading(false);
+    }, () => { setStatus({ success: false, message: 'Location access denied' }); setLoading(false); });
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#1a1a1a', color: 'white' }}>
-      <h1 style={{ marginBottom: '40px', fontSize: '32px' }}>Emergency Assistance</h1>
-      <button 
-        onClick={handlePanic} 
-        style={{ 
-          background: 'red', 
-          color: 'white', 
-          width: '250px', 
-          height: '250px', 
-          borderRadius: '50%', 
-          fontSize: '48px', 
-          fontWeight: 'bold', 
-          cursor: 'pointer', 
-          border: '10px solid #ff4d4d',
-          boxShadow: '0 0 50px rgba(255, 0, 0, 0.6)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          transition: 'transform 0.1s'
-        }}
-        onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
-        onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
-      >
-        SOS
-      </button>
-      <div style={{ marginTop: '40px', fontSize: '20px', height: '30px' }}>
-        {status === 'SENDING' && 'Broadcasting Location...'}
-        {status === 'SENT' && <span style={{ color: '#00ff00' }}>Alert Sent to Police Station! Help is on the way.</span>}
-        {status === 'ERROR' && <span style={{ color: '#ff4d4d' }}>Failed to send alert. Try again.</span>}
-      </div>
+    <div style={{ maxWidth: '400px', margin: '60px auto', textAlign: 'center', fontFamily: 'Arial', padding: '20px' }}>
+      <h2 style={{ color: '#2c3e50' }}>🚨 Emergency Panic Button</h2>
+      <p style={{ color: '#666' }}>Press only in case of emergency. Your live location will be sent to the nearest police unit.</p>
+      <input placeholder="Enter your Digital ID (e.g. ST-XXXXXXXX)" value={digitalId}
+        onChange={(e) => setDigitalId(e.target.value)}
+        style={{ width: '100%', padding: '12px', fontSize: '15px', borderRadius: '6px', border: '1px solid #ccc', marginBottom: '30px', boxSizing: 'border-box' }} />
+      {!status ? (
+        <button onClick={handlePanic} disabled={loading}
+          style={{ width: '180px', height: '180px', borderRadius: '50%', backgroundColor: loading ? '#e74c3c99' : '#e74c3c', color: 'white', fontSize: '20px', fontWeight: 'bold', border: 'none', cursor: 'pointer', boxShadow: '0 0 30px rgba(231,76,60,0.5)' }}>
+          {loading ? '📡 Sending...' : '🆘 PANIC'}
+        </button>
+      ) : (
+        <div style={{ padding: '20px', borderRadius: '10px', backgroundColor: status.success ? '#d5f5e3' : '#fadbd8' }}>
+          <h3 style={{ color: status.success ? '#27ae60' : '#e74c3c' }}>{status.success ? '✅ Alert Sent!' : '❌ Failed'}</h3>
+          <p>{status.message}</p>
+          <button onClick={() => setStatus(null)}
+            style={{ marginTop: '10px', padding: '10px 20px', backgroundColor: '#e74c3c', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+            Reset
+          </button>
+        </div>
+      )}
     </div>
   );
-};
+}
 
 export default Panic;
