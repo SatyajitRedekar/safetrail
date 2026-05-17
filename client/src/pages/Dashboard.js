@@ -6,10 +6,10 @@ function Dashboard() {
   const [tourists, setTourists] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/alerts/all')
+    axios.get('https://safetrail-api-1pq5.onrender.com/api/alerts/all')
       .then(res => setAlerts(res.data.alerts))
       .catch(err => console.log(err));
-    axios.get('http://localhost:5000/api/tourists/all')
+    axios.get('https://safetrail-api-1pq5.onrender.com/api/tourists/all')
       .then(res => setTourists(res.data.tourists))
       .catch(err => console.log(err));
   }, []);
