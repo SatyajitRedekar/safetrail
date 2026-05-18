@@ -28,7 +28,7 @@ function Home() {
   const fetchNearbyPlaces = async (lat, lon) => {
     try {
       // 1. Get nearby Wikipedia articles (places of interest) within 10km
-      const geoUrl = `https://en.wikipedia.org/w/api.php?action=query&list=geosearch&gsradius=10000&gscoord=${lat}|${lon}&gslimit=4&format=json&origin=*`;
+      const geoUrl = `https://en.wikipedia.org/w/api.php?action=query&list=geosearch&gsradius=10000&gscoord=${lat}|${lon}&gslimit=6&format=json&origin=*`;
       const geoRes = await fetch(geoUrl);
       const geoData = await geoRes.json();
       
