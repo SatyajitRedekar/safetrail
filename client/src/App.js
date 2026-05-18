@@ -7,6 +7,7 @@ import Panic from './pages/Panic';
 import { LanguageProvider } from './LanguageContext';
 import { ToastProvider } from './components/Toast';
 import Navbar from './components/Navbar';
+import Chatbot from './components/Chatbot';
 import './App.css';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       <ToastProvider>
         <Router>
           <Navbar />
+          <Chatbot />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />

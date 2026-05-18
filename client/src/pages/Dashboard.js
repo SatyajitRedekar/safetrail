@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { MapContainer, TileLayer, Circle, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+});
 
 function Dashboard() {
   const [alerts, setAlerts] = useState([]);
@@ -80,36 +90,103 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Live Map Section */}
+        {/* Live Heatmap & Crowd Analytics Section */}
         <div style={{
           margin: '20px 0 30px 0',
           borderRadius: '12px',
           overflow: 'hidden',
           border: '2px solid #1a237e',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+          boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+          display: 'flex',
+          backgroundColor: '#fff'
         }}>
-          <div style={{
-            backgroundColor: '#1a237e',
-            padding: '10px 20px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <span style={{ color: 'white', fontWeight: 'bold' }}>
-              📍 LIVE TOURIST TRACKING MAP — NORTHEAST INDIA
-            </span>
-            <span style={{ color: '#4fc3f7', fontSize: '12px' }}>
-              🟢 TRACKING ACTIVE
-            </span>
+          {/* Map Side */}
+          <div style={{ flex: '70%', position: 'relative' }}>
+              <div style={{
+                backgroundColor: '#1a237e',
+                padding: '10px 20px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <span style={{ color: 'white', fontWeight: 'bold' }}>
+                  📍 LIVE TOURIST HEATMAP — ALL INDIA
+                </span>
+                <span style={{ color: '#ff9800', fontSize: '12px', fontWeight: 'bold' }}>
+                  🔥 HEATMAP ACTIVE
+                </span>
+              </div>
+              
+              <div style={{ width: '100%', height: '400px' }}>
+                <MapContainer center={[20.5937, 78.9629]} zoom={5} style={{ height: '100%', width: '100%' }}>
+                  <TileLayer
+                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                    attribution='&copy; OpenStreetMap'
+                  />
+                  {/* Heatmap Zones Anchored to Real Coordinates */}
+                  <Circle center={[28.7041, 77.1025]} pathOptions={{ color: 'red', fillColor: '#e53935', fillOpacity: 0.6, weight: 0 }} radius={80000} /> {/* Delhi */}
+                  <Circle center={[19.0760, 72.8777]} pathOptions={{ color: 'red', fillColor: '#e53935', fillOpacity: 0.6, weight: 0 }} radius={60000} /> {/* Mumbai */}
+                  <Circle center={[15.2993, 74.1240]} pathOptions={{ color: 'orange', fillColor: '#ff9800', fillOpacity: 0.5, weight: 0 }} radius={50000} /> {/* Goa */}
+                  <Circle center={[12.9716, 77.5946]} pathOptions={{ color: 'green', fillColor: '#43a047', fillOpacity: 0.4, weight: 0 }} radius={50000} /> {/* Bangalore */}
+                  <Circle center={[26.9124, 75.7873]} pathOptions={{ color: 'orange', fillColor: '#ff9800', fillOpacity: 0.5, weight: 0 }} radius={40000} /> {/* Jaipur */}
+                  <Circle center={[26.1445, 91.7362]} pathOptions={{ color: 'orange', fillColor: '#ff9800', fillOpacity: 0.5, weight: 0 }} radius={35000} /> {/* Guwahati */}
+                  
+                  {/* Plot actual live tourist markers if available */}
+                  {tourists.map((t, idx) => (
+                    t.location && t.location.latitude ? (
+                      <Marker key={idx} position={[t.location.latitude, t.location.longitude]}>
+                        <Popup>{t.name}</Popup>
+                      </Marker>
+                    ) : null
+                  ))}
+                </MapContainer>
+              </div>
           </div>
-          <iframe
-            src="https://www.openstreetmap.org/export/embed.html?bbox=88.0%2C22.0%2C97.5%2C29.5&layer=mapnik"
-            width="100%"
-            height="400"
-            style={{ border: 'none', display: 'block' }}
-            title="Northeast India Map"
-          />
+
+          {/* Analytics Sidebar */}
+          <div style={{ flex: '30%', borderLeft: '2px solid #eee', padding: '20px', display: 'flex', flexDirection: 'column' }}>
+            <h3 style={{ margin: '0 0 15px 0', color: '#1a237e', fontSize: '18px' }}>📊 Crowd Analytics</h3>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#e53935' }}>Delhi NCR Hub</span>
+                <span style={{ fontSize: '14px', color: '#e53935', fontWeight: 'bold' }}>92%</span>
+              </div>
+              <div style={{ width: '100%', height: '8px', backgroundColor: '#ffcdd2', borderRadius: '4px' }}>
+                <div style={{ width: '92%', height: '100%', backgroundColor: '#e53935', borderRadius: '4px' }}></div>
+              </div>
+              <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>Overcrowded. Risk of gridlock.</div>
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#e53935' }}>Mumbai Gateway Zone</span>
+                <span style={{ fontSize: '14px', color: '#e53935', fontWeight: 'bold' }}>88%</span>
+              </div>
+              <div style={{ width: '100%', height: '8px', backgroundColor: '#ffcdd2', borderRadius: '4px' }}>
+                <div style={{ width: '88%', height: '100%', backgroundColor: '#e53935', borderRadius: '4px' }}></div>
+              </div>
+              <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>Extreme footfall. Monitor closely.</div>
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#ff9800' }}>Goa Coastal Belt</span>
+                <span style={{ fontSize: '14px', color: '#ff9800', fontWeight: 'bold' }}>65%</span>
+              </div>
+              <div style={{ width: '100%', height: '8px', backgroundColor: '#ffe0b2', borderRadius: '4px' }}>
+                <div style={{ width: '65%', height: '100%', backgroundColor: '#ff9800', borderRadius: '4px' }}></div>
+              </div>
+              <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>Moderate traffic. Flow is steady.</div>
+            </div>
+
+            <div style={{ marginTop: 'auto', backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '8px', border: '1px solid #ddd' }}>
+              <strong style={{ display: 'block', fontSize: '12px', color: '#555', marginBottom: '5px' }}>🤖 AI RECOMMENDATION</strong>
+              <span style={{ fontSize: '13px', color: '#333' }}>Deploy 4 extra crowd control units to Delhi NCR Hub. Issue advisory for Mumbai Gateway Zone.</span>
+            </div>
+          </div>
         </div>
+
 
         {/* Tables Section */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>

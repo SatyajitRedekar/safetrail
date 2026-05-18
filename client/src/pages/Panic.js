@@ -39,22 +39,50 @@ function Panic() {
     );
   }, []);
 
+  const triggerOfflineSMS = (lat, lon) => {
+    const latStr = lat ? lat.toFixed(5) : 'Unknown';
+    const lonStr = lon ? lon.toFixed(5) : 'Unknown';
+    const message = `[EMERGENCY SOS - SafeTrail] Need Help! My Location: Lat ${latStr}, Lon ${lonStr}. Digital ID: ${digitalId}`;
+    const smsUrl = `sms:112?body=${encodeURIComponent(message)}`;
+    
+    setStatus({ success: false, message: "No internet. Triggering Offline SMS..." });
+    addToast('Opening SMS for Offline SOS', 'error');
+    
+    setTimeout(() => {
+      window.location.href = smsUrl;
+      setLoading(false);
+    }, 1500);
+  };
+
   const handlePanic = async () => {
     if (!digitalId) { alert('Please enter your Digital ID'); return; }
     setLoading(true);
+
+    if (!navigator.onLine && currentLocation) {
+      triggerOfflineSMS(currentLocation[0], currentLocation[1]);
+      return;
+    }
+
     navigator.geolocation.getCurrentPosition(async (pos) => {
       try {
-        const res = await axios.post('https://safetrail-api-1pq5.onrender.com/api/alerts/panic', {
+        // Changed to localhost since backend is running locally
+        const res = await axios.post('http://localhost:5000/api/alerts/panic', {
           digitalId, latitude: pos.coords.latitude, longitude: pos.coords.longitude
         });
         setStatus({ success: true, message: res.data.message });
         addToast('SOS Alert Sent Successfully!', 'success');
+        setLoading(false);
       } catch (err) {
-        const errMsg = err.response?.data?.message || 'Error communicating with dispatch';
-        setStatus({ success: false, message: errMsg });
-        addToast(errMsg, 'error');
+        if (!err.response) {
+          // Network error or server down, fallback to SMS
+          triggerOfflineSMS(pos.coords.latitude, pos.coords.longitude);
+        } else {
+          const errMsg = err.response?.data?.message || 'Error communicating with dispatch';
+          setStatus({ success: false, message: errMsg });
+          addToast(errMsg, 'error');
+          setLoading(false);
+        }
       }
-      setLoading(false);
     }, () => { 
       const gpsErr = 'CRITICAL: Location access denied. Enable GPS.';
       setStatus({ success: false, message: gpsErr }); 
