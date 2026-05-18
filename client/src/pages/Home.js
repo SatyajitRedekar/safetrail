@@ -53,6 +53,8 @@ function Home() {
         return {
           id: p.pageid,
           title: p.title,
+          lat: p.lat,
+          lon: p.lon,
           dist: (p.dist / 1000).toFixed(1), // convert to km
           image: details?.thumbnail?.source || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80',
           extract: details?.extract?.replace(/<\/?[^>]+(>|$)/g, "") || "A notable place to visit nearby."
@@ -278,6 +280,7 @@ function Home() {
                   cursor: 'pointer',
                   color: '#1a237e'
                 }}
+                onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&origin=${userLoc.lat},${userLoc.lon}&destination=${place.lat},${place.lon}`, '_blank')}
                 onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
                 onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                 >
@@ -293,12 +296,13 @@ function Home() {
                       {place.extract}
                     </p>
                     <a 
-                      href={`https://en.wikipedia.org/?curid=${place.id}`} 
+                      href={`https://www.google.com/maps/dir/?api=1&origin=${userLoc.lat},${userLoc.lon}&destination=${place.lat},${place.lon}`} 
                       target="_blank" 
                       rel="noreferrer"
                       style={{ display: 'inline-block', marginTop: '10px', fontSize: '13px', color: '#1976d2', textDecoration: 'none', fontWeight: 'bold' }}
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      Read more →
+                      Get Directions 🗺️ →
                     </a>
                   </div>
                 </div>
