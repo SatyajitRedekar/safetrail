@@ -12,4 +12,14 @@ router.post('/login', (req, res) => {
   }
 });
 
+router.post('/broadcast', (req, res) => {
+  const { message, severity } = req.body;
+  if (!message) return res.status(400).json({ error: 'Message required' });
+  
+  // Broadcast to all connected clients
+  req.io.emit('emergency_broadcast', { message, severity, timestamp: new Date() });
+  
+  res.json({ success: true, message: 'Broadcast sent successfully' });
+});
+
 module.exports = router;

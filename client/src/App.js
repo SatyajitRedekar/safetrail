@@ -9,12 +9,14 @@ import { LanguageProvider } from './LanguageContext';
 import { ToastProvider } from './components/Toast';
 import Navbar from './components/Navbar';
 import Chatbot from './components/Chatbot';
+import BroadcastBanner from './components/BroadcastBanner';
 import './App.css';
 
 function App() {
   return (
     <LanguageProvider>
       <ToastProvider>
+        <BroadcastBanner />
         <Router>
           <Navbar />
           <Chatbot />

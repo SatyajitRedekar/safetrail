@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -7,7 +8,7 @@ function Chatbot() {
   ]);
   const [input, setInput] = useState('');
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
 
@@ -15,23 +16,16 @@ function Chatbot() {
     setMessages(prev => [...prev, { text: userMsg, isBot: false }]);
     setInput('');
 
-    // AI Logic Simulation
-    setTimeout(() => {
-      let botResponse = "I'm not sure about that. Remember to always follow local police guidelines.";
-      const lower = userMsg.toLowerCase();
-      
-      if (lower.includes('weather') || lower.includes('rain')) {
-        botResponse = "The weather can change quickly in hilly regions. Please check the Live Weather section on your dashboard for real-time alerts.";
-      } else if (lower.includes('safe') || lower.includes('danger')) {
-        botResponse = "If you feel unsafe, please use the Emergency SOS button immediately. Otherwise, stick to verified tourist routes.";
-      } else if (lower.includes('hospital') || lower.includes('police')) {
-        botResponse = "You can find nearby emergency services by pressing the SOS button or checking the Live Explorer map. The general emergency number is 112.";
-      } else if (lower.includes('hello') || lower.includes('hi')) {
-        botResponse = "Hello! Stay safe and enjoy your journey with SafeTrail.";
-      }
-
-      setMessages(prev => [...prev, { text: botResponse, isBot: true }]);
-    }, 1000);
+    // Call Real AI Backend
+    try {
+      const res = await axios.post('http://localhost:5000/api/ai/chat', {
+        message: userMsg,
+        userLocation: 'Northeast India (GPS tracking active)'
+      });
+      setMessages(prev => [...prev, { text: res.data.response, isBot: true }]);
+    } catch (err) {
+      setMessages(prev => [...prev, { text: "Connection error. Please try again later.", isBot: true }]);
+    }
   };
 
   return (

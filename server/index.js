@@ -16,9 +16,12 @@ app.get('/', (req, res) => { res.json({ message: 'SafeTrail API running' }); });
 const touristRoutes = require('./routes/touristRoutes');
 const alertRoutes = require('./routes/alertRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const aiRoutes = require('./routes/aiRoutes');
+
 app.use('/api/tourists', touristRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/ai', aiRoutes);
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
   socket.on('disconnect', () => console.log('User disconnected'));
