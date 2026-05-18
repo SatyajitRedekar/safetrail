@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
 import { MapContainer, TileLayer, Circle, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -50,6 +51,63 @@ function Dashboard() {
   const delhiDensity = getZoneDensity(28.7041, 77.1025, 5);
   const mumbaiDensity = getZoneDensity(19.0760, 72.8777, 5);
   const goaDensity = getZoneDensity(15.2993, 74.1240, 5);
+
+  const generateEFIRPdf = () => {
+    if (!selectedFir) return;
+    const doc = new jsPDF();
+    
+    // Header
+    doc.setFontSize(22);
+    doc.setTextColor(26, 35, 126); // Navy blue
+    doc.text('GOVERNMENT OF INDIA', 105, 20, { align: 'center' });
+    
+    doc.setFontSize(16);
+    doc.setTextColor(229, 57, 53); // Red
+    doc.text('ELECTRONIC FIRST INFORMATION REPORT (E-FIR)', 105, 30, { align: 'center' });
+    
+    // Divider
+    doc.setLineWidth(0.5);
+    doc.line(20, 35, 190, 35);
+    
+    // Details
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    
+    const touristName = selectedFir.name || 'Unknown Tourist';
+    const digitalId = selectedFir.digitalId || 'N/A';
+    const lat = selectedFir.location?.latitude?.toFixed(5) || 'Unknown';
+    const lng = selectedFir.location?.longitude?.toFixed(5) || 'Unknown';
+    
+    doc.text(`E-FIR Reference No: ST-${Math.floor(Math.random() * 100000)}`, 20, 50);
+    doc.text(`Date & Time: ${new Date().toLocaleString()}`, 20, 60);
+    doc.text(`Dispatch Officer ID: admin`, 20, 70);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('INCIDENT DETAILS:', 20, 90);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Type of Emergency: SOS PANIC ALERT`, 20, 100);
+    doc.text(`GPS Coordinates: Lat ${lat}, Lng ${lng}`, 20, 110);
+    doc.text(`Description: Emergency SOS trigger received via SafeTrail`, 20, 120);
+    doc.text(`mobile client indicating immediate severe distress.`, 20, 127);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('VICTIM / COMPLAINANT INFORMATION:', 20, 150);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Name: ${touristName}`, 20, 160);
+    doc.text(`Digital Tourist ID: ${digitalId}`, 20, 170);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('OFFICIAL STATUS: HIGH PRIORITY (PENDING INVESTIGATION)', 20, 200);
+    
+    // Footer
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('This is a digitally generated document by the SafeTrail Tourist Safety System.', 105, 270, { align: 'center' });
+    doc.text('Valid only for official police jurisdiction use.', 105, 275, { align: 'center' });
+    
+    // Save PDF
+    doc.save(`SafeTrail_EFIR_${touristName.replace(/\s+/g, '_')}.pdf`);
+  };
 
   return (
     <div style={{ fontFamily: '"Inter", "Segoe UI", Roboto, sans-serif', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
@@ -402,6 +460,9 @@ function Dashboard() {
             </div>
             
             <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
+              <button style={{ flex: 1, padding: '12px', backgroundColor: '#1565c0', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }} onClick={generateEFIRPdf}>
+                📄 Download Official PDF
+              </button>
               <button style={{ flex: 1, padding: '12px', backgroundColor: '#43a047', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }} onClick={() => { alert('E-FIR Dispatched to Headquarters!'); setSelectedFir(null); }}>
                 File Official Report
               </button>
