@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { MapContainer, TileLayer, Circle, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -16,12 +17,18 @@ function Dashboard() {
   const [tourists, setTourists] = useState([]);
   const [selectedFir, setSelectedFir] = useState(null);
   const [selectedTourist, setSelectedTourist] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('https://safetrail-api-1pq5.onrender.com/api/alerts/all')
+    if (!localStorage.getItem('adminToken')) {
+      navigate('/admin/login');
+      return;
+    }
+
+    axios.get('http://localhost:5000/api/alerts/all')
       .then(res => setAlerts(res.data.alerts))
       .catch(err => console.log(err));
-    axios.get('https://safetrail-api-1pq5.onrender.com/api/tourists/all')
+    axios.get('http://localhost:5000/api/tourists/all')
       .then(res => setTourists(res.data.tourists))
       .catch(err => console.log(err));
   }, []);
@@ -38,8 +45,15 @@ function Dashboard() {
             <p style={{ margin: '4px 0 0 0', color: '#9fa8da', fontSize: '13px', fontWeight: '500' }}>NORTHEAST REGION POLICE DISPATCH</p>
           </div>
         </div>
-        <div style={{ fontSize: '14px', fontWeight: '600', backgroundColor: 'rgba(255,255,255,0.1)', padding: '10px 20px', borderRadius: '50px' }}>
-          STATUS: <span style={{ color: '#43a047' }}>● SYSTEM ONLINE</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <div style={{ fontSize: '14px', fontWeight: '600', backgroundColor: 'rgba(255,255,255,0.1)', padding: '10px 20px', borderRadius: '50px' }}>
+            STATUS: <span style={{ color: '#43a047' }}>● SYSTEM ONLINE</span>
+          </div>
+          <button 
+            onClick={() => { localStorage.removeItem('adminToken'); navigate('/'); }}
+            style={{ backgroundColor: '#e53935', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '50px', cursor: 'pointer', fontWeight: 'bold' }}>
+            Logout
+          </button>
         </div>
       </div>
 

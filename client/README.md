@@ -187,6 +187,13 @@ Cluster: cluster0.seztmft.mongodb.net
 Database: safetrail
 ```
 
+### Police Admin Portal
+```
+Officer ID: admin
+Passcode: safetrail2026
+```
+
+
 ### API Endpoints
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -194,6 +201,7 @@ Database: safetrail
 | GET | /api/tourists/all | Get all tourists |
 | POST | /api/alerts/panic | Trigger panic alert |
 | GET | /api/alerts/all | Get all alerts |
+| POST | /api/admin/login | Authenticate Police Admin |
 
 ---
 
