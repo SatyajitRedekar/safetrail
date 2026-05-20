@@ -18,11 +18,12 @@ function Chatbot() {
 
     // Call Real AI Backend
     try {
-      const res = await axios.post('http://localhost:5000/api/ai/chat', {
-        message: userMsg,
-        userLocation: 'Northeast India (GPS tracking active)'
-      });
-      setMessages(prev => [...prev, { text: res.data.response, isBot: true }]);
+      const response = await axios.post(
+        'https://safetrail-api-1pq5.onrender.com/api/chat',
+        { message: userMsg }
+      );
+      const reply = response.data.reply;
+      setMessages(prev => [...prev, { text: reply, isBot: true }]);
     } catch (err) {
       setMessages(prev => [...prev, { text: "Connection error. Please try again later.", isBot: true }]);
     }
