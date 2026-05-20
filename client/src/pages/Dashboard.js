@@ -29,13 +29,16 @@ function Dashboard() {
       return;
     }
 
-    axios.get('http://localhost:5000/api/alerts/all')
-      .then(res => setAlerts(res.data.alerts))
-      .catch(err => console.log(err));
-    axios.get('http://localhost:5000/api/tourists/all')
-      .then(res => setTourists(res.data.tourists))
-      .catch(err => console.log(err));
-  }, []);
+    const fetchData = () => {
+      axios.get('https://safetrail-api-1pq5.onrender.com/api/alerts/all')
+        .then(res => setAlerts(res.data.alerts)).catch(console.log);
+      axios.get('https://safetrail-api-1pq5.onrender.com/api/tourists/all')
+        .then(res => setTourists(res.data.tourists)).catch(console.log);
+    };
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, [navigate]);
 
   // Dynamic Crowd Calculation based on Live DB Tourists
   const getZoneDensity = (lat, lon, maxCapacity) => {

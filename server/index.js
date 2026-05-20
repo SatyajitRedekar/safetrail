@@ -17,11 +17,13 @@ const touristRoutes = require('./routes/touristRoutes');
 const alertRoutes = require('./routes/alertRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 
 app.use('/api/tourists', touristRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api', chatRoutes);
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
   socket.on('disconnect', () => console.log('User disconnected'));
