@@ -66,6 +66,10 @@ function Register() {
               <label style={labelStyle}>Passport / Aadhaar Number</label>
               <input style={inputStyle} name="passport" placeholder="ID Number" onChange={handleChange} required />
               
+              <p style={{ color: '#e53935', fontSize: '13px', fontWeight: '500', marginBottom: '15px', textAlign: 'center' }}>
+                ⚠️ First request may take 60 seconds (free server waking up)
+              </p>
+
               <button type="submit" disabled={loading}
                 style={{ 
                   width: '100%', padding: '16px', backgroundColor: '#1a237e', color: 'white', 
