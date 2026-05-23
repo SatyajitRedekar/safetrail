@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AdminLogin from './pages/AdminLogin';
 import Panic from './pages/Panic';
+import Profile from './pages/Profile';
 import { LanguageProvider } from './LanguageContext';
 import { ToastProvider } from './components/Toast';
 import Navbar from './components/Navbar';
@@ -26,6 +27,7 @@ function App() {
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/panic" element={<Panic />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </Router>
       </ToastProvider>

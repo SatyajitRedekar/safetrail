@@ -1,9 +1,20 @@
 const Alert = require('../models/Alert');
 
+const Tourist = require('../models/Tourist');
+
 exports.createAlert = async (req, res) => {
   try {
-    const { touristId, location } = req.body;
-    const alert = new Alert({ touristId, location });
+    const { digitalId, latitude, longitude } = req.body;
+    
+    const tourist = await Tourist.findOne({ digitalId: digitalId.toUpperCase() });
+    if (!tourist) {
+      return res.status(404).json({ message: 'Invalid Digital ID. Tourist not found.' });
+    }
+
+    const alert = new Alert({ 
+      touristId: tourist._id, 
+      location: { lat: latitude, lng: longitude } 
+    });
     await alert.save();
 
     const populatedAlert = await Alert.findById(alert._id).populate('touristId');
@@ -12,7 +23,7 @@ exports.createAlert = async (req, res) => {
       req.io.emit('newAlert', populatedAlert);
     }
 
-    res.status(201).json(populatedAlert);
+    res.status(201).json({ message: 'SOS Alert Broadcasted to Patrol Units', alert: populatedAlert });
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }

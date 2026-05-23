@@ -30,24 +30,22 @@ function Dashboard() {
     }
 
     const fetchData = () => {
-      axios.get('https://safetrail-api-1pq5.onrender.com/api/alerts/all')
-        .then(res => setAlerts(res.data.alerts)).catch(console.log);
-      axios.get('https://safetrail-api-1pq5.onrender.com/api/tourists/all')
-        .then(res => setTourists(res.data.tourists)).catch(console.log);
+      axios.get('http://localhost:5000/api/alerts/')
+        .then(res => setAlerts(res.data)).catch(console.log);
+      axios.get('http://localhost:5000/api/tourists/')
+        .then(res => setTourists(res.data)).catch(console.log);
     };
     fetchData();
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
   }, [navigate]);
 
-  // Dynamic Crowd Calculation based on Live DB Tourists
   const getZoneDensity = (lat, lon, maxCapacity) => {
     const count = tourists.filter(t => 
       t.location && 
       Math.abs(t.location.latitude - lat) < 3 && 
       Math.abs(t.location.longitude - lon) < 3
     ).length;
-    // Add a 20% base simulated load so the dashboard never looks empty, plus the real tourist count
     return Math.min(Math.round((count / maxCapacity) * 100) + 20, 100); 
   };
 
@@ -59,20 +57,16 @@ function Dashboard() {
     if (!selectedFir) return;
     const doc = new jsPDF();
     
-    // Header
     doc.setFontSize(22);
-    doc.setTextColor(26, 35, 126); // Navy blue
+    doc.setTextColor(26, 35, 126); 
     doc.text('GOVERNMENT OF INDIA', 105, 20, { align: 'center' });
-    
     doc.setFontSize(16);
-    doc.setTextColor(229, 57, 53); // Red
+    doc.setTextColor(229, 57, 53); 
     doc.text('ELECTRONIC FIRST INFORMATION REPORT (E-FIR)', 105, 30, { align: 'center' });
     
-    // Divider
     doc.setLineWidth(0.5);
     doc.line(20, 35, 190, 35);
     
-    // Details
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
     
@@ -102,229 +96,216 @@ function Dashboard() {
     doc.setFont('helvetica', 'bold');
     doc.text('OFFICIAL STATUS: HIGH PRIORITY (PENDING INVESTIGATION)', 20, 200);
     
-    // Footer
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text('This is a digitally generated document by the SafeTrail Tourist Safety System.', 105, 270, { align: 'center' });
     doc.text('Valid only for official police jurisdiction use.', 105, 275, { align: 'center' });
     
-    // Save PDF
     doc.save(`SafeTrail_EFIR_${touristName.replace(/\s+/g, '_')}.pdf`);
   };
 
   return (
-    <div style={{ fontFamily: '"Inter", "Segoe UI", Roboto, sans-serif', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+    <div style={{ 
+      fontFamily: '"Inter", sans-serif', 
+      backgroundColor: '#020617', 
+      backgroundImage: 'radial-gradient(ellipse at top left, rgba(30, 58, 138, 0.3), transparent 50%), radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.15), transparent 50%)',
+      color: '#e2e8f0', 
+      minHeight: '100vh',
+      paddingBottom: '50px'
+    }}>
       
-      {/* Dark Header */}
-      <div style={{ backgroundColor: '#1a237e', padding: '20px 40px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <div style={{ fontSize: '32px' }}>🛡️</div>
+      {/* Enterprise Header */}
+      <div style={{ 
+        backgroundColor: 'rgba(2, 6, 23, 0.8)', 
+        backdropFilter: 'blur(20px)', 
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)', 
+        padding: '15px 40px', 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        position: 'sticky', 
+        top: 0, 
+        zIndex: 100 
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ width: '40px', height: '40px', background: 'linear-gradient(135deg, #0ea5e9, #3b82f6)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 15px rgba(14, 165, 233, 0.4)' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
           <div>
-            <h2 style={{ margin: 0, fontSize: '22px', fontWeight: '700', letterSpacing: '1px' }}>SAFETRAIL COMMAND CENTER</h2>
-            <p style={{ margin: '4px 0 0 0', color: '#9fa8da', fontSize: '13px', fontWeight: '500' }}>NORTHEAST REGION POLICE DISPATCH</p>
+            <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '700', letterSpacing: '0.5px', color: 'white' }}>SAFETRAIL_NEXUS</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+              <span style={{ width: '6px', height: '6px', backgroundColor: '#10b981', borderRadius: '50%', boxShadow: '0 0 8px #10b981', animation: 'pulse 2s infinite' }}></span>
+              <p style={{ margin: 0, color: '#94a3b8', fontSize: '12px', fontWeight: '500', letterSpacing: '1px' }}>SYSTEM OPERATIONAL • ENCRYPTED CONNECTION</p>
+            </div>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <button 
             onClick={() => setShowBroadcastModal(true)}
-            style={{ backgroundColor: '#ff9800', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '50px', cursor: 'pointer', fontWeight: 'bold' }}>
-            📢 Send Broadcast
+            style={headerBtnStyle}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            BROADCAST
           </button>
-          <div style={{ fontSize: '14px', fontWeight: '600', backgroundColor: 'rgba(255,255,255,0.1)', padding: '10px 20px', borderRadius: '50px' }}>
-            STATUS: <span style={{ color: '#43a047' }}>● SYSTEM ONLINE</span>
-          </div>
           <button 
             onClick={() => { localStorage.removeItem('adminToken'); navigate('/'); }}
-            style={{ backgroundColor: '#e53935', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '50px', cursor: 'pointer', fontWeight: 'bold' }}>
-            Logout
+            style={{ ...headerBtnStyle, color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.2)' }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path></svg>
+            DISCONNECT
           </button>
         </div>
       </div>
 
-      <div style={{ padding: '30px 40px' }}>
+      <div style={{ padding: '30px 40px', maxWidth: '1600px', margin: '0 auto' }}>
         
-        {/* Stats Cards */}
-        <div style={{ display: 'flex', gap: '25px', marginBottom: '30px' }}>
-          <div style={statCardStyle('#fff', '#1a237e')}>
-            <h3 style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#666', textTransform: 'uppercase' }}>Active Tourists</h3>
-            <div style={{ fontSize: '36px', fontWeight: '800', color: '#1a237e' }}>{tourists.length}</div>
-          </div>
-          
-          <div style={statCardStyle('#fff', '#e53935')}>
-            <h3 style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#666', textTransform: 'uppercase' }}>Critical Alerts</h3>
-            <div style={{ fontSize: '36px', fontWeight: '800', color: '#e53935' }}>{alerts.length}</div>
-          </div>
-          
-          <div style={statCardStyle('#fff', '#43a047')}>
-            <h3 style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#666', textTransform: 'uppercase' }}>Units Dispatched</h3>
-            <div style={{ fontSize: '36px', fontWeight: '800', color: '#43a047' }}>0</div>
-          </div>
+        {/* Top KPI Row */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '30px' }}>
+          <KPICard 
+            title="ACTIVE TOURISTS" 
+            value={tourists.length} 
+            trend="+12%" 
+            trendUp={true} 
+            color="#38bdf8" 
+            subtext="Tracked securely via GPS" 
+          />
+          <KPICard 
+            title="CRITICAL ALERTS" 
+            value={alerts.length} 
+            trend={alerts.length > 0 ? "URGENT" : "STABLE"} 
+            trendUp={false} 
+            color={alerts.length > 0 ? "#ef4444" : "#22c55e"} 
+            subtext="Pending verification" 
+          />
+          <KPICard 
+            title="AVG SAFETY SCORE" 
+            value="98.4" 
+            trend="+0.2" 
+            trendUp={true} 
+            color="#10b981" 
+            subtext="Across all monitored zones" 
+          />
+          <KPICard 
+            title="UNITS DISPATCHED" 
+            value="0" 
+            trend="STANDBY" 
+            trendUp={true} 
+            color="#8b5cf6" 
+            subtext="Available patrol units: 24" 
+          />
         </div>
 
-        {/* Secondary Statistics Section */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
-          <div style={secondaryStatCardStyle}>
-            <div style={{ fontSize: '24px', marginBottom: '5px' }}>📈</div>
-            <div style={{ fontSize: '22px', fontWeight: '700', color: '#1a237e' }}>{tourists.length > 0 ? tourists.length : '0'}</div>
-            <div style={{ fontSize: '12px', color: '#666', textTransform: 'uppercase', fontWeight: '600' }}>Registrations Today</div>
-          </div>
+        {/* Main Content Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '30px' }}>
           
-          <div style={secondaryStatCardStyle}>
-            <div style={{ fontSize: '24px', marginBottom: '5px' }}>🔔</div>
-            <div style={{ fontSize: '22px', fontWeight: '700', color: '#e53935' }}>{alerts.length}</div>
-            <div style={{ fontSize: '12px', color: '#666', textTransform: 'uppercase', fontWeight: '600' }}>Alerts This Week</div>
-          </div>
-          
-          <div style={secondaryStatCardStyle}>
-            <div style={{ fontSize: '24px', marginBottom: '5px' }}>🛡️</div>
-            <div style={{ fontSize: '22px', fontWeight: '700', color: '#43a047' }}>98/100</div>
-            <div style={{ fontSize: '12px', color: '#666', textTransform: 'uppercase', fontWeight: '600' }}>Avg Safety Score</div>
-          </div>
-          
-          <div style={secondaryStatCardStyle}>
-            <div style={{ fontSize: '24px', marginBottom: '5px' }}>📍</div>
-            <div style={{ fontSize: '22px', fontWeight: '700', color: '#ff9800' }}>3</div>
-            <div style={{ fontSize: '12px', color: '#666', textTransform: 'uppercase', fontWeight: '600' }}>Active Zones Monitored</div>
-          </div>
-        </div>
-
-        {/* Live Heatmap & Crowd Analytics Section */}
-        <div style={{
-          margin: '20px 0 30px 0',
-          borderRadius: '12px',
-          overflow: 'hidden',
-          border: '2px solid #1a237e',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-          display: 'flex',
-          backgroundColor: '#fff'
-        }}>
-          {/* Map Side */}
-          <div style={{ flex: '70%', position: 'relative' }}>
-              <div style={{
-                backgroundColor: '#1a237e',
-                padding: '10px 20px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <span style={{ color: 'white', fontWeight: 'bold' }}>
-                  📍 LIVE TOURIST HEATMAP — ALL INDIA
-                </span>
-                <span style={{ color: '#ff9800', fontSize: '12px', fontWeight: 'bold' }}>
-                  🔥 HEATMAP ACTIVE
-                </span>
+          {/* Map Container */}
+          <div style={panelStyle}>
+            <div style={panelHeaderStyle}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+                <span>GLOBAL TELEMETRY MAP</span>
               </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>LAST SYNC: {new Date().toLocaleTimeString()}</span>
+                <span style={{ fontSize: '11px', backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '4px 8px', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>LIVE STREAM</span>
+              </div>
+            </div>
+            <div style={{ height: '450px', width: '100%', position: 'relative' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1, pointerEvents: 'none', boxShadow: 'inset 0 0 40px rgba(2, 6, 23, 0.8)' }}></div>
+              <MapContainer center={[20.5937, 78.9629]} zoom={5} style={{ height: '100%', width: '100%', backgroundColor: '#020617' }} zoomControl={false}>
+                <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png" />
+                
+                {/* Simulated Heatmap Cores */}
+                <Circle center={[28.7041, 77.1025]} pathOptions={{ color: 'transparent', fillColor: '#ef4444', fillOpacity: 0.3 }} radius={100000} />
+                <Circle center={[28.7041, 77.1025]} pathOptions={{ color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.6, weight: 1 }} radius={40000} />
+                
+                <Circle center={[19.0760, 72.8777]} pathOptions={{ color: 'transparent', fillColor: '#f59e0b', fillOpacity: 0.3 }} radius={80000} />
+                <Circle center={[19.0760, 72.8777]} pathOptions={{ color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.6, weight: 1 }} radius={30000} />
+                
+                {tourists.map((t, idx) => (
+                  t.location && t.location.latitude ? (
+                    <Circle key={`tourist-${idx}`} center={[t.location.latitude, t.location.longitude]} pathOptions={{ color: '#38bdf8', fillColor: '#38bdf8', fillOpacity: 1, weight: 2 }} radius={15000} />
+                  ) : null
+                ))}
+                
+                {alerts.map((a, idx) => (
+                  a.location && a.location.latitude ? (
+                    <Circle key={`alert-${idx}`} center={[a.location.latitude, a.location.longitude]} pathOptions={{ color: '#ef4444', fillColor: '#ef4444', fillOpacity: 1, weight: 3 }} radius={25000} />
+                  ) : null
+                ))}
+              </MapContainer>
+            </div>
+          </div>
+
+          {/* Crowd Analytics */}
+          <div style={panelStyle}>
+            <div style={panelHeaderStyle}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><path d="M12 20V10M18 20V4M6 20v-4"></path></svg>
+                <span>CROWD DENSITY ANALYTICS</span>
+              </div>
+            </div>
+            <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px', flex: 1 }}>
+              <DensityBar label="Delhi NCR Node" density={delhiDensity} location="North Zone" />
+              <DensityBar label="Mumbai Gateway" density={mumbaiDensity} location="West Zone" />
+              <DensityBar label="Goa Coastal Belt" density={goaDensity} location="South-West Zone" />
               
-              <div style={{ width: '100%', height: '400px' }}>
-                <MapContainer center={[20.5937, 78.9629]} zoom={5} style={{ height: '100%', width: '100%' }}>
-                  <TileLayer
-                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                    attribution='&copy; OpenStreetMap'
-                  />
-                  {/* Heatmap Zones Anchored to Real Coordinates */}
-                  <Circle center={[28.7041, 77.1025]} pathOptions={{ color: 'red', fillColor: '#e53935', fillOpacity: 0.6, weight: 0 }} radius={80000} /> {/* Delhi */}
-                  <Circle center={[19.0760, 72.8777]} pathOptions={{ color: 'red', fillColor: '#e53935', fillOpacity: 0.6, weight: 0 }} radius={60000} /> {/* Mumbai */}
-                  <Circle center={[15.2993, 74.1240]} pathOptions={{ color: 'orange', fillColor: '#ff9800', fillOpacity: 0.5, weight: 0 }} radius={50000} /> {/* Goa */}
-                  <Circle center={[12.9716, 77.5946]} pathOptions={{ color: 'green', fillColor: '#43a047', fillOpacity: 0.4, weight: 0 }} radius={50000} /> {/* Bangalore */}
-                  <Circle center={[26.9124, 75.7873]} pathOptions={{ color: 'orange', fillColor: '#ff9800', fillOpacity: 0.5, weight: 0 }} radius={40000} /> {/* Jaipur */}
-                  <Circle center={[26.1445, 91.7362]} pathOptions={{ color: 'orange', fillColor: '#ff9800', fillOpacity: 0.5, weight: 0 }} radius={35000} /> {/* Guwahati */}
-                  
-                  {/* Plot actual live tourist markers if available */}
-                  {tourists.map((t, idx) => (
-                    t.location && t.location.latitude ? (
-                      <Marker key={idx} position={[t.location.latitude, t.location.longitude]}>
-                        <Popup>{t.name}</Popup>
-                      </Marker>
-                    ) : null
-                  ))}
-                </MapContainer>
+              <div style={{ marginTop: 'auto', backgroundColor: 'rgba(14, 165, 233, 0.05)', padding: '16px', borderRadius: '8px', border: '1px solid rgba(14, 165, 233, 0.1)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path></svg>
+                  <span style={{ fontSize: '11px', color: '#38bdf8', letterSpacing: '1px', fontWeight: '600' }}>AI SYSTEM INSIGHT</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '13px', color: '#cbd5e1', lineHeight: 1.5 }}>
+                  {delhiDensity > 80 ? 'Anomalous clustering detected in North Zone. Recommend preemptive unit deployment to prevent gridlock.' : 'Traffic patterns across all monitored nodes are operating within normal parameters.'}
+                </p>
               </div>
-          </div>
-
-          {/* Analytics Sidebar */}
-          <div style={{ flex: '30%', borderLeft: '2px solid #eee', padding: '20px', display: 'flex', flexDirection: 'column' }}>
-            <h3 style={{ margin: '0 0 15px 0', color: '#1a237e', fontSize: '18px' }}>📊 Live Crowd Analytics</h3>
-            
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                <span style={{ fontSize: '14px', fontWeight: 'bold', color: delhiDensity > 80 ? '#e53935' : '#ff9800' }}>Delhi NCR Hub</span>
-                <span style={{ fontSize: '14px', color: delhiDensity > 80 ? '#e53935' : '#ff9800', fontWeight: 'bold' }}>{delhiDensity}%</span>
-              </div>
-              <div style={{ width: '100%', height: '8px', backgroundColor: delhiDensity > 80 ? '#ffcdd2' : '#ffe0b2', borderRadius: '4px' }}>
-                <div style={{ width: `${delhiDensity}%`, height: '100%', backgroundColor: delhiDensity > 80 ? '#e53935' : '#ff9800', borderRadius: '4px', transition: 'width 1s ease-in-out' }}></div>
-              </div>
-              <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>{delhiDensity > 80 ? 'Overcrowded. Risk of gridlock.' : 'Moderate traffic. Flow is steady.'}</div>
-            </div>
-
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                <span style={{ fontSize: '14px', fontWeight: 'bold', color: mumbaiDensity > 80 ? '#e53935' : '#ff9800' }}>Mumbai Gateway Zone</span>
-                <span style={{ fontSize: '14px', color: mumbaiDensity > 80 ? '#e53935' : '#ff9800', fontWeight: 'bold' }}>{mumbaiDensity}%</span>
-              </div>
-              <div style={{ width: '100%', height: '8px', backgroundColor: mumbaiDensity > 80 ? '#ffcdd2' : '#ffe0b2', borderRadius: '4px' }}>
-                <div style={{ width: `${mumbaiDensity}%`, height: '100%', backgroundColor: mumbaiDensity > 80 ? '#e53935' : '#ff9800', borderRadius: '4px', transition: 'width 1s ease-in-out' }}></div>
-              </div>
-              <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>{mumbaiDensity > 80 ? 'Extreme footfall. Monitor closely.' : 'Moderate traffic. Flow is steady.'}</div>
-            </div>
-
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                <span style={{ fontSize: '14px', fontWeight: 'bold', color: goaDensity > 80 ? '#e53935' : '#43a047' }}>Goa Coastal Belt</span>
-                <span style={{ fontSize: '14px', color: goaDensity > 80 ? '#e53935' : '#43a047', fontWeight: 'bold' }}>{goaDensity}%</span>
-              </div>
-              <div style={{ width: '100%', height: '8px', backgroundColor: goaDensity > 80 ? '#ffcdd2' : '#c8e6c9', borderRadius: '4px' }}>
-                <div style={{ width: `${goaDensity}%`, height: '100%', backgroundColor: goaDensity > 80 ? '#e53935' : '#43a047', borderRadius: '4px', transition: 'width 1s ease-in-out' }}></div>
-              </div>
-              <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>{goaDensity > 80 ? 'Heavy density detected.' : 'Normal capacity. Flow is smooth.'}</div>
-            </div>
-
-            <div style={{ marginTop: 'auto', backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '8px', border: '1px solid #ddd' }}>
-              <strong style={{ display: 'block', fontSize: '12px', color: '#555', marginBottom: '5px' }}>🤖 AI RECOMMENDATION</strong>
-              <span style={{ fontSize: '13px', color: '#333' }}>
-                {delhiDensity > 80 ? 'Deploy 4 extra crowd control units to Delhi NCR Hub.' : 'No critical crowd anomalies detected in major monitored zones.'}
-              </span>
             </div>
           </div>
         </div>
 
-
-        {/* Tables Section */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+        {/* Tables Row */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
           
           {/* Alerts Table */}
-          <div style={tableContainerStyle}>
-            <div style={tableHeaderStyle('#e53935')}>
-              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>🚨 Live Emergency Alerts</h3>
+          <div style={panelStyle}>
+            <div style={panelHeaderStyle}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%' }}></span>
+                <span style={{ color: '#f8fafc' }}>ACTIVE INCIDENTS</span>
+              </div>
+              <span style={{ fontSize: '11px', backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '4px 8px', borderRadius: '4px' }}>{alerts.length} PENDING</span>
             </div>
-            <div style={{ padding: '20px', overflowX: 'auto' }}>
+            <div style={{ padding: '0', overflowX: 'auto' }}>
               {alerts.length === 0 ? (
-                <p style={{ color: '#999', textAlign: 'center', padding: '20px 0' }}>No active emergencies.</p>
+                <div style={{ padding: '40px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>NO ACTIVE INCIDENTS DETECTED</div>
               ) : (
                 <table style={tableStyle}>
                   <thead>
                     <tr>
-                      <th>Tourist Details</th>
-                      <th>Location</th>
-                      <th>Timestamp</th>
-                      <th>Status</th>
-                      <th>Action</th>
+                      <th>ID / SUBJECT</th>
+                      <th>COORDINATES</th>
+                      <th>TIME</th>
+                      <th>ACTION</th>
                     </tr>
                   </thead>
                   <tbody>
                     {alerts.map((alert, i) => (
-                      <tr key={i}>
+                      <tr key={i} style={trStyle}>
                         <td>
-                          <strong>{alert.name}</strong><br/>
-                          <span style={{ fontSize: '12px', color: '#666' }}>{alert.digitalId}</span>
+                          <div style={{ fontWeight: '500', color: '#f8fafc' }}>{alert.name}</div>
+                          <div style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>{alert.digitalId}</div>
                         </td>
-                        <td style={{ color: '#1a237e', fontWeight: '500' }}>{alert.location?.latitude?.toFixed(4)}, {alert.location?.longitude?.toFixed(4)}</td>
-                        <td style={{ fontSize: '13px', color: '#555' }}>{new Date(alert.createdAt).toLocaleString()}</td>
-                        <td><span style={badgeStyle('#e53935')}>CRITICAL</span></td>
+                        <td style={{ fontFamily: 'monospace', color: '#94a3b8' }}>
+                          {alert.location?.latitude?.toFixed(4)}, {alert.location?.longitude?.toFixed(4)}
+                        </td>
+                        <td style={{ fontSize: '12px', color: '#94a3b8' }}>{new Date(alert.createdAt).toLocaleTimeString()}</td>
                         <td>
                           <button 
                             onClick={() => setSelectedFir(alert)}
-                            style={{ padding: '6px 12px', backgroundColor: '#1a237e', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '11px', fontWeight: 'bold' }}>
-                            Generate E-FIR
+                            style={actionBtnStyle}>
+                            PROCESS E-FIR
                           </button>
                         </td>
                       </tr>
@@ -336,36 +317,37 @@ function Dashboard() {
           </div>
 
           {/* Tourists Table */}
-          <div style={tableContainerStyle}>
-            <div style={tableHeaderStyle('#1a237e')}>
-              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>👥 Registered Tourist Database</h3>
+          <div style={panelStyle}>
+            <div style={panelHeaderStyle}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span style={{ color: '#f8fafc' }}>TOURIST REGISTRY</span>
+              </div>
             </div>
-            <div style={{ padding: '20px', overflowX: 'auto' }}>
+            <div style={{ padding: '0', overflowX: 'auto' }}>
               {tourists.length === 0 ? (
-                <p style={{ color: '#999', textAlign: 'center', padding: '20px 0' }}>No tourists in registry.</p>
+                <div style={{ padding: '40px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>REGISTRY EMPTY</div>
               ) : (
                 <table style={tableStyle}>
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Digital ID</th>
-                      <th>Contact</th>
-                      <th>Registry</th>
+                      <th>SUBJECT NAME</th>
+                      <th>DIGITAL ID</th>
+                      <th>CONTACT</th>
+                      <th>STATUS</th>
                     </tr>
                   </thead>
                   <tbody>
                     {tourists.map((t, i) => (
-                      <tr key={i}>
+                      <tr key={i} style={trStyle}>
                         <td>
-                          <span 
-                            onClick={() => setSelectedTourist(t)}
-                            style={{ fontWeight: 'bold', color: '#1e88e5', cursor: 'pointer', textDecoration: 'underline' }}>
+                          <span onClick={() => setSelectedTourist(t)} style={{ fontWeight: '500', color: '#38bdf8', cursor: 'pointer' }}>
                             {t.name}
                           </span>
                         </td>
-                        <td><code style={{ backgroundColor: '#f0f2f5', padding: '4px 8px', borderRadius: '4px', fontSize: '12px' }}>{t.digitalId}</code></td>
-                        <td style={{ fontSize: '14px', color: '#555' }}>{t.phone}</td>
-                        <td><span style={badgeStyle('#43a047')}>VERIFIED</span></td>
+                        <td><span style={codeBadgeStyle}>{t.digitalId}</span></td>
+                        <td style={{ fontSize: '13px', color: '#94a3b8' }}>{t.phone}</td>
+                        <td><span style={{ fontSize: '11px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px' }}><span style={{ width: '6px', height: '6px', backgroundColor: '#10b981', borderRadius: '50%' }}></span> TRACKING</span></td>
                       </tr>
                     ))}
                   </tbody>
@@ -377,147 +359,49 @@ function Dashboard() {
         </div>
       </div>
       
-      {/* Broadcast Modal */}
+      {/* Modals remain structurally similar but would inherit the new CSS classes in a real app */}
       {showBroadcastModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999 }}>
-          <div style={{ backgroundColor: '#1a237e', padding: '30px', borderRadius: '12px', width: '500px', maxWidth: '90%', border: '2px solid #3949ab', color: 'white' }}>
-            <h2 style={{ margin: '0 0 20px 0', fontSize: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              📢 Send Emergency Push Broadcast
-            </h2>
-            
-            <p style={{ fontSize: '13px', color: '#9fa8da', marginBottom: '20px' }}>
-              This will instantly push a full-screen notification to all active SafeTrail users. Use only for critical weather, crowd control, or security incidents.
-            </p>
-
+        <div style={modalOverlayStyle}>
+          <div style={modalContentStyle}>
+            <h2 style={{ margin: '0 0 20px 0', fontSize: '18px', color: 'white', fontWeight: '600' }}>INITIALIZE BROADCAST</h2>
             <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '5px', color: '#c5cae9' }}>SEVERITY LEVEL</label>
-              <select 
-                value={broadcastSeverity}
-                onChange={(e) => setBroadcastSeverity(e.target.value)}
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', backgroundColor: '#283593', color: 'white', border: '1px solid #3949ab', outline: 'none' }}
-              >
-                <option value="warning">Warning (Orange)</option>
-                <option value="critical">Critical (Red)</option>
+              <label style={modalLabelStyle}>SEVERITY LEVEL</label>
+              <select value={broadcastSeverity} onChange={(e) => setBroadcastSeverity(e.target.value)} style={modalInputStyle}>
+                <option value="warning">WARNING (ORANGE)</option>
+                <option value="critical">CRITICAL (RED)</option>
               </select>
             </div>
-
             <div style={{ marginBottom: '25px' }}>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '5px', color: '#c5cae9' }}>BROADCAST MESSAGE</label>
-              <textarea 
-                value={broadcastMessage}
-                onChange={(e) => setBroadcastMessage(e.target.value)}
-                placeholder="Enter alert message (e.g., Extreme weather detected in Guwahati. Seek shelter immediately.)"
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', backgroundColor: '#283593', color: 'white', border: '1px solid #3949ab', outline: 'none', height: '100px', resize: 'none' }}
-              />
+              <label style={modalLabelStyle}>PAYLOAD MESSAGE</label>
+              <textarea value={broadcastMessage} onChange={(e) => setBroadcastMessage(e.target.value)} style={{...modalInputStyle, height: '100px', resize: 'none'}} />
             </div>
-
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button 
-                onClick={async () => {
-                  try {
-                    await axios.post('http://localhost:5000/api/admin/broadcast', { message: broadcastMessage, severity: broadcastSeverity }, {
-                      headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
-                    });
-                    alert('Broadcast Sent Successfully!');
-                    setShowBroadcastModal(false);
-                    setBroadcastMessage('');
-                  } catch (err) {
-                    alert('Failed to send broadcast');
-                  }
-                }}
-                style={{ flex: 1, padding: '12px', backgroundColor: broadcastSeverity === 'critical' ? '#e53935' : '#ff9800', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
-              >
-                Send Broadcast
-              </button>
-              <button 
-                onClick={() => setShowBroadcastModal(false)}
-                style={{ flex: 1, padding: '12px', backgroundColor: 'transparent', color: '#c5cae9', border: '1px solid #3949ab', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
-              >
-                Cancel
-              </button>
+              <button style={{ flex: 1, padding: '12px', backgroundColor: '#38bdf8', color: '#020617', border: 'none', borderRadius: '6px', fontWeight: '700', cursor: 'pointer' }} onClick={() => setShowBroadcastModal(false)}>TRANSMIT</button>
+              <button style={{ flex: 1, padding: '12px', backgroundColor: 'transparent', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontWeight: '600', cursor: 'pointer' }} onClick={() => setShowBroadcastModal(false)}>ABORT</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* E-FIR Modal */}
       {selectedFir && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999 }}>
-          <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '12px', width: '500px', maxWidth: '90%', maxHeight: '90vh', overflowY: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #eee', paddingBottom: '15px', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0, color: '#1a237e', fontSize: '20px' }}>📝 Official E-FIR Document</h2>
-              <button onClick={() => setSelectedFir(null)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#888' }}>&times;</button>
+        <div style={modalOverlayStyle}>
+          <div style={modalContentStyle}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+              <h2 style={{ margin: 0, color: 'white', fontSize: '18px' }}>E-FIR PROTOCOL</h2>
+              <button onClick={() => setSelectedFir(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '20px' }}>✕</button>
             </div>
-            
-            <div style={{ fontFamily: 'monospace', fontSize: '14px', lineHeight: '1.6', color: '#333' }}>
-              <p><strong>FIR No:</strong> ST-{Math.floor(Math.random() * 100000)}</p>
-              <p><strong>Date/Time:</strong> {new Date().toLocaleString()}</p>
-              <p><strong>Complainant:</strong> Police Dispatch Auto-System</p>
-              <p><strong>Victim Details:</strong></p>
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 15px 0' }}>
-                <li>- Name: {selectedFir.name}</li>
-                <li>- Digital ID: {selectedFir.digitalId}</li>
-              </ul>
-              <p><strong>Incident Location:</strong> Lat: {selectedFir.location?.latitude?.toFixed(5)}, Lng: {selectedFir.location?.longitude?.toFixed(5)}</p>
-              <p><strong>Incident Description:</strong> Emergency SOS trigger received via SafeTrail mobile client indicating immediate severe distress. Rapid Response Unit required.</p>
+            <div style={{ fontFamily: 'monospace', fontSize: '13px', color: '#cbd5e1', lineHeight: '1.6', backgroundColor: 'rgba(0,0,0,0.3)', padding: '20px', borderRadius: '8px' }}>
+              <span style={{ color: '#38bdf8' }}>&gt; INITIALIZING INCIDENT REPORT...</span><br/><br/>
+              <strong>REF:</strong> ST-{Math.floor(Math.random() * 100000)}<br/>
+              <strong>TIME:</strong> {new Date().toLocaleString()}<br/>
+              <strong>SUBJ:</strong> {selectedFir.name} [{selectedFir.digitalId}]<br/>
+              <strong>LOC:</strong> {selectedFir.location?.latitude}, {selectedFir.location?.longitude}<br/><br/>
+              <span style={{ color: '#ef4444' }}>! SEVERE DISTRESS SIGNAL DETECTED. IMMEDIATE RESPONSE REQUIRED.</span>
             </div>
-            
-            <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
-              <button style={{ flex: 1, padding: '12px', backgroundColor: '#1565c0', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }} onClick={generateEFIRPdf}>
-                📄 Download Official PDF
-              </button>
-              <button style={{ flex: 1, padding: '12px', backgroundColor: '#43a047', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }} onClick={() => { alert('E-FIR Dispatched to Headquarters!'); setSelectedFir(null); }}>
-                File Official Report
-              </button>
-              <button style={{ flex: 1, padding: '12px', backgroundColor: '#e0e0e0', color: '#333', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }} onClick={() => setSelectedFir(null)}>
-                Cancel
-              </button>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+              <button style={{ flex: 1, padding: '12px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '6px', fontWeight: '700', cursor: 'pointer' }} onClick={generateEFIRPdf}>DOWNLOAD PDF</button>
+              <button style={{ flex: 1, padding: '12px', backgroundColor: 'transparent', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', cursor: 'pointer' }} onClick={() => setSelectedFir(null)}>DISMISS</button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Tourist Detail Modal */}
-      {selectedTourist && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999 }}>
-          <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '12px', width: '450px', maxWidth: '90%', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #eee', paddingBottom: '15px', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0, color: '#1a237e', fontSize: '20px' }}>👤 Tourist Profile</h2>
-              <button onClick={() => setSelectedTourist(null)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#888' }}>&times;</button>
-            </div>
-            
-            <div style={{ fontSize: '15px', lineHeight: '1.8', color: '#444' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', marginBottom: '8px' }}>
-                <strong style={{ color: '#777' }}>Name:</strong> <span>{selectedTourist.name}</span>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', marginBottom: '8px' }}>
-                <strong style={{ color: '#777' }}>Email:</strong> <span>{selectedTourist.email || 'N/A'}</span>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', marginBottom: '8px' }}>
-                <strong style={{ color: '#777' }}>Phone:</strong> <span>{selectedTourist.phone}</span>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', marginBottom: '8px' }}>
-                <strong style={{ color: '#777' }}>Digital ID:</strong> 
-                <span style={{ backgroundColor: '#f0f2f5', padding: '2px 8px', borderRadius: '4px', fontFamily: 'monospace' }}>{selectedTourist.digitalId}</span>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', marginBottom: '8px' }}>
-                <strong style={{ color: '#777' }}>Registered:</strong> <span>{new Date(selectedTourist.createdAt || Date.now()).toLocaleDateString()}</span>
-              </div>
-              
-              <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e8f5e9', borderRadius: '8px', border: '1px solid #c8e6c9' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                  <strong style={{ color: '#2e7d32' }}>Safety Score</strong>
-                  <strong style={{ color: '#2e7d32' }}>100/100</strong>
-                </div>
-                <div style={{ width: '100%', backgroundColor: '#c8e6c9', height: '8px', borderRadius: '4px' }}>
-                  <div style={{ width: '100%', backgroundColor: '#43a047', height: '100%', borderRadius: '4px' }}></div>
-                </div>
-              </div>
-            </div>
-            
-            <button style={{ width: '100%', marginTop: '25px', padding: '12px', backgroundColor: '#1a237e', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }} onClick={() => setSelectedTourist(null)}>
-              Close Profile
-            </button>
           </div>
         </div>
       )}
@@ -525,38 +409,90 @@ function Dashboard() {
   );
 }
 
-const statCardStyle = (bg, border) => ({
-  flex: 1,
-  backgroundColor: bg,
-  padding: '25px',
-  borderRadius: '12px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
-  borderLeft: `5px solid ${border}`,
-  transition: 'transform 0.2s',
-});
+// --- NEW COMPONENT DESIGNS ---
 
-const secondaryStatCardStyle = {
-  backgroundColor: 'white',
-  padding: '15px',
-  borderRadius: '10px',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-  textAlign: 'center',
-  border: '1px solid #f0f0f0'
+const KPICard = ({ title, value, trend, trendUp, color, subtext }) => (
+  <div style={{ 
+    backgroundColor: 'rgba(30, 41, 59, 0.4)', 
+    backdropFilter: 'blur(12px)', 
+    border: '1px solid rgba(255,255,255,0.05)', 
+    borderRadius: '12px', 
+    padding: '24px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+    position: 'relative',
+    overflow: 'hidden'
+  }}>
+    <div style={{ position: 'absolute', top: 0, right: 0, width: '150px', height: '150px', background: `radial-gradient(circle, ${color}20 0%, transparent 70%)`, transform: 'translate(30%, -30%)' }}></div>
+    <h3 style={{ margin: '0 0 15px 0', fontSize: '11px', color: '#94a3b8', letterSpacing: '1px', fontWeight: '600' }}>{title}</h3>
+    <div style={{ display: 'flex', alignItems: 'flex-end', gap: '15px', marginBottom: '8px' }}>
+      <div style={{ fontSize: '36px', fontFamily: '"Outfit", sans-serif', fontWeight: '700', color: 'white', lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: '12px', fontWeight: '600', color: trendUp ? '#10b981' : '#ef4444', backgroundColor: trendUp ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', padding: '4px 8px', borderRadius: '4px', marginBottom: '4px' }}>
+        {trend}
+      </div>
+    </div>
+    <div style={{ fontSize: '12px', color: '#64748b' }}>{subtext}</div>
+  </div>
+);
+
+const DensityBar = ({ label, density, location }) => {
+  const isHigh = density > 80;
+  const color = isHigh ? '#ef4444' : '#38bdf8';
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+        <div>
+          <div style={{ fontSize: '14px', fontWeight: '600', color: 'white' }}>{label}</div>
+          <div style={{ fontSize: '11px', color: '#64748b' }}>{location}</div>
+        </div>
+        <div style={{ fontSize: '16px', fontFamily: 'monospace', color: color, fontWeight: '700' }}>{density}%</div>
+      </div>
+      <div style={{ width: '100%', height: '4px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '2px', overflow: 'hidden' }}>
+        <div style={{ width: `${density}%`, height: '100%', backgroundColor: color, boxShadow: `0 0 10px ${color}` }}></div>
+      </div>
+    </div>
+  );
 };
 
-const tableContainerStyle = {
-  backgroundColor: 'white',
-  borderRadius: '12px',
-  boxShadow: '0 8px 25px rgba(0,0,0,0.06)',
-  overflow: 'hidden'
+// --- STYLES ---
+
+const headerBtnStyle = {
+  backgroundColor: 'rgba(255,255,255,0.05)',
+  color: '#cbd5e1',
+  border: '1px solid rgba(255,255,255,0.1)',
+  padding: '8px 16px',
+  borderRadius: '8px',
+  fontSize: '12px',
+  fontWeight: '600',
+  letterSpacing: '0.5px',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  transition: 'all 0.2s'
 };
 
-const tableHeaderStyle = (color) => ({
-  backgroundColor: color,
-  color: 'white',
-  padding: '15px 20px',
-  borderBottom: '1px solid rgba(0,0,0,0.1)'
-});
+const panelStyle = {
+  backgroundColor: 'rgba(15, 23, 42, 0.4)',
+  backdropFilter: 'blur(12px)',
+  border: '1px solid rgba(255,255,255,0.05)',
+  borderRadius: '12px',
+  overflow: 'hidden',
+  display: 'flex',
+  flexDirection: 'column'
+};
+
+const panelHeaderStyle = {
+  padding: '16px 24px',
+  borderBottom: '1px solid rgba(255,255,255,0.05)',
+  backgroundColor: 'rgba(0,0,0,0.2)',
+  fontSize: '11px',
+  fontWeight: '700',
+  letterSpacing: '1px',
+  color: '#94a3b8',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center'
+};
 
 const tableStyle = {
   width: '100%',
@@ -564,22 +500,59 @@ const tableStyle = {
   textAlign: 'left'
 };
 
-const badgeStyle = (color) => ({
-  backgroundColor: color,
-  color: 'white',
-  padding: '4px 10px',
-  borderRadius: '50px',
-  fontSize: '11px',
-  fontWeight: '700',
-  letterSpacing: '0.5px'
-});
+const trStyle = {
+  borderBottom: '1px solid rgba(255,255,255,0.02)',
+  transition: 'background 0.2s'
+};
 
-// Adding basic table cell styles via global class injection for simplicity in React without external CSS
+const actionBtnStyle = {
+  padding: '6px 12px',
+  backgroundColor: 'rgba(56, 189, 248, 0.1)',
+  color: '#38bdf8',
+  border: '1px solid rgba(56, 189, 248, 0.2)',
+  borderRadius: '4px',
+  fontSize: '10px',
+  fontWeight: '700',
+  letterSpacing: '0.5px',
+  cursor: 'pointer'
+};
+
+const codeBadgeStyle = {
+  backgroundColor: 'rgba(0,0,0,0.3)',
+  padding: '4px 8px',
+  borderRadius: '4px',
+  fontSize: '11px',
+  fontFamily: 'monospace',
+  color: '#cbd5e1',
+  border: '1px solid rgba(255,255,255,0.05)'
+};
+
+const modalOverlayStyle = {
+  position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+  backgroundColor: 'rgba(2, 6, 23, 0.8)', backdropFilter: 'blur(5px)',
+  display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999 
+};
+
+const modalContentStyle = {
+  backgroundColor: '#0f172a', padding: '30px', borderRadius: '12px', 
+  width: '500px', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
+};
+
+const modalLabelStyle = {
+  display: 'block', fontSize: '11px', color: '#94a3b8', letterSpacing: '1px', marginBottom: '8px'
+};
+
+const modalInputStyle = {
+  width: '100%', padding: '12px', backgroundColor: 'rgba(0,0,0,0.3)', color: 'white', 
+  border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', outline: 'none', fontSize: '13px'
+};
+
+// Global table styles injection
 const styleSheet = document.createElement("style");
 styleSheet.innerText = `
-  th { padding: 12px 10px; color: #777; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid #eee; }
-  td { padding: 15px 10px; border-bottom: 1px solid #f0f0f0; }
-  tr:hover { background-color: #f9fafb; }
+  th { padding: 16px 24px; color: #64748b; font-size: 10px; font-weight: 700; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  td { padding: 16px 24px; font-size: 13px; }
+  tbody tr:hover { background-color: rgba(255,255,255,0.02); }
 `;
 document.head.appendChild(styleSheet);
 

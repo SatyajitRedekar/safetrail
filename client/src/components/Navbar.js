@@ -7,25 +7,27 @@ function Navbar() {
 
   return (
     <nav style={{
-      position: 'sticky',
-      top: 0,
+      position: 'absolute',
+      top: 0, left: 0, right: 0,
       zIndex: 1000,
-      backgroundColor: '#1a237e',
+      backgroundColor: 'rgba(15, 23, 42, 0.5)',
+      backdropFilter: 'blur(10px)',
       color: 'white',
-      padding: '15px 30px',
+      padding: '20px 40px',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-      fontFamily: '"Inter", "Segoe UI", Roboto, sans-serif'
+      borderBottom: '1px solid rgba(255,255,255,0.1)',
+      fontFamily: '"Outfit", sans-serif'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <span style={{ fontSize: '24px' }}>🛡️</span>
-        <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', letterSpacing: '1px' }}>SafeTrail</h2>
+        <span style={{ fontSize: '28px', filter: 'drop-shadow(0 0 10px rgba(56, 189, 248, 0.5))' }}>🛡️</span>
+        <h2 style={{ margin: 0, fontSize: '24px', fontWeight: '800', letterSpacing: '2px' }}>SAFETRAIL</h2>
       </div>
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
         <Link to="/" style={linkStyle}>Home</Link>
         <Link to="/register" style={linkStyle}>Register</Link>
+        <Link to="/profile" style={linkStyle}>Profile</Link>
         <Link to="/dashboard" style={linkStyle}>Dashboard</Link>
         <Link to="/panic" style={{ ...linkStyle, color: '#ff5252', fontWeight: 'bold' }}>Emergency SOS</Link>
         
@@ -53,11 +55,13 @@ function Navbar() {
 }
 
 const linkStyle = {
-  color: 'white',
+  color: '#e2e8f0',
   textDecoration: 'none',
   fontSize: '15px',
-  fontWeight: '500',
-  transition: 'opacity 0.2s'
+  fontWeight: '600',
+  letterSpacing: '0.5px',
+  transition: 'all 0.2s',
+  fontFamily: '"Inter", sans-serif'
 };
 
 export default Navbar;

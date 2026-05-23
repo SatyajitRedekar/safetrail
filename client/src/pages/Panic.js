@@ -16,10 +16,7 @@ L.Icon.Default.mergeOptions({
 const redPulseIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
+  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
   className: 'pulsing-leaflet-icon'
 });
 
@@ -40,32 +37,20 @@ function Panic() {
   }, []);
 
   const triggerOfflineSMS = (lat, lon) => {
-    const latStr = lat ? lat.toFixed(5) : 'Unknown';
-    const lonStr = lon ? lon.toFixed(5) : 'Unknown';
-    const message = `[EMERGENCY SOS - SafeTrail] Need Help! My Location: Lat ${latStr}, Lon ${lonStr}. Digital ID: ${digitalId}`;
-    const smsUrl = `sms:112?body=${encodeURIComponent(message)}`;
-    
+    const message = `[EMERGENCY SOS - SafeTrail] Need Help! My Location: Lat ${lat ? lat.toFixed(5) : 'Unknown'}, Lon ${lon ? lon.toFixed(5) : 'Unknown'}. Digital ID: ${digitalId}`;
     setStatus({ success: false, message: "No internet. Triggering Offline SMS..." });
     addToast('Opening SMS for Offline SOS', 'error');
-    
-    setTimeout(() => {
-      window.location.href = smsUrl;
-      setLoading(false);
-    }, 1500);
+    setTimeout(() => { window.location.href = `sms:112?body=${encodeURIComponent(message)}`; setLoading(false); }, 1500);
   };
 
   const handlePanic = async () => {
     if (!digitalId) { alert('Please enter your Digital ID'); return; }
     setLoading(true);
 
-    if (!navigator.onLine && currentLocation) {
-      triggerOfflineSMS(currentLocation[0], currentLocation[1]);
-      return;
-    }
+    if (!navigator.onLine && currentLocation) { triggerOfflineSMS(currentLocation[0], currentLocation[1]); return; }
 
     navigator.geolocation.getCurrentPosition(async (pos) => {
       try {
-        // Changed to localhost since backend is running locally
         const res = await axios.post('http://localhost:5000/api/alerts/panic', {
           digitalId, latitude: pos.coords.latitude, longitude: pos.coords.longitude
         });
@@ -73,10 +58,8 @@ function Panic() {
         addToast('SOS Alert Sent Successfully!', 'success');
         setLoading(false);
       } catch (err) {
-        if (!err.response) {
-          // Network error or server down, fallback to SMS
-          triggerOfflineSMS(pos.coords.latitude, pos.coords.longitude);
-        } else {
+        if (!err.response) triggerOfflineSMS(pos.coords.latitude, pos.coords.longitude);
+        else {
           const errMsg = err.response?.data?.message || 'Error communicating with dispatch';
           setStatus({ success: false, message: errMsg });
           addToast(errMsg, 'error');
@@ -84,81 +67,98 @@ function Panic() {
         }
       }
     }, () => { 
-      const gpsErr = 'CRITICAL: Location access denied. Enable GPS.';
-      setStatus({ success: false, message: gpsErr }); 
-      addToast(gpsErr, 'error');
+      setStatus({ success: false, message: 'CRITICAL: Location access denied. Enable GPS.' }); 
       setLoading(false); 
     });
   };
 
   return (
     <div style={{ 
-      minHeight: '100vh', backgroundColor: '#0a0a0a', display: 'flex', 
-      flexDirection: 'column', justifyContent: 'center', alignItems: 'center', 
-      fontFamily: '"Inter", "Segoe UI", Roboto, sans-serif', padding: '20px' 
+      minHeight: '100vh', display: 'flex', 
+      flexDirection: 'column', alignItems: 'center', 
+      fontFamily: '"Outfit", sans-serif', padding: '120px 20px 60px 20px',
+      background: 'radial-gradient(circle at center, #0f172a 0%, #020617 100%)'
     }}>
       <style>
         {`
-          @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 40px rgba(229, 57, 53, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
+          @keyframes radarPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 60px rgba(220, 38, 38, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
           }
           .panic-btn {
-            animation: pulse 2s infinite;
+            animation: radarPulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
+            background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
           }
           .panic-btn:hover {
             animation: none;
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(229, 57, 53, 0.9);
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(239, 68, 68, 0.8);
           }
           .pulsing-leaflet-icon {
             border-radius: 50%;
-            background-color: rgba(229, 57, 53, 0.4);
-            animation: pulse 2s infinite;
+            background-color: rgba(239, 68, 68, 0.6);
+            animation: radarPulse 2s infinite;
           }
         `}
       </style>
       
-      <div style={{ maxWidth: '450px', width: '100%', textAlign: 'center' }}>
-        <h2 style={{ color: '#ff5252', fontSize: '32px', marginBottom: '10px', fontWeight: '800', letterSpacing: '1px' }}>EMERGENCY SOS</h2>
-        <p style={{ color: '#aaa', fontSize: '15px', lineHeight: '1.6', marginBottom: '40px' }}>
-          Press the button below only in case of a severe emergency. Your live GPS coordinates will be instantly broadcasted to the nearest police response unit.
+      <div style={{ maxWidth: '550px', width: '100%', textAlign: 'center', animation: 'fadeIn 0.5s ease' }}>
+        <h2 style={{ color: '#ef4444', fontSize: '42px', marginBottom: '15px', fontWeight: '800', letterSpacing: '4px', textShadow: '0 0 20px rgba(239,68,68,0.5)' }}>
+          EMERGENCY SOS
+        </h2>
+        <p style={{ color: '#94a3b8', fontSize: '16px', lineHeight: '1.6', marginBottom: '40px', padding: '0 20px', fontFamily: '"Inter", sans-serif' }}>
+          Press the button below only in a severe emergency. Your live GPS coordinates will be instantly broadcasted to the nearest active patrol unit.
         </p>
 
-        <div style={{ backgroundColor: '#1c1c1c', padding: '30px', borderRadius: '16px', border: '1px solid #333' }}>
-          <label style={{ display: 'block', color: '#888', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '10px', textAlign: 'left' }}>Enter Digital ID</label>
-          <input 
-            placeholder="e.g. ST-XXXXXXXX" 
-            value={digitalId}
-            onChange={(e) => setDigitalId(e.target.value)}
-            style={{ 
-              width: '100%', padding: '16px', fontSize: '18px', borderRadius: '8px', 
-              border: '2px solid #444', backgroundColor: '#0a0a0a', color: 'white', 
-              marginBottom: '40px', boxSizing: 'border-box', outline: 'none', textAlign: 'center',
-              letterSpacing: '2px', fontWeight: '600'
-            }} 
-          />
+        <div className="glassmorphism" style={{ 
+          padding: '40px', borderRadius: '24px', 
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          background: 'rgba(15, 23, 42, 0.7)',
+          boxShadow: '0 30px 60px rgba(0,0,0,0.5), inset 0 0 20px rgba(239, 68, 68, 0.1)'
+        }}>
+          
+          <div style={{ marginBottom: '30px' }}>
+            <label style={{ display: 'block', color: '#94a3b8', fontSize: '13px', fontWeight: 'bold', letterSpacing: '2px', marginBottom: '10px', textAlign: 'left' }}>
+              DIGITAL ID AUTHENTICATION
+            </label>
+            <input 
+              placeholder="ENTER DIGITAL ID" 
+              value={digitalId}
+              onChange={(e) => setDigitalId(e.target.value.toUpperCase())}
+              style={{ 
+                width: '100%', padding: '20px', fontSize: '20px', borderRadius: '12px', 
+                border: '1px solid rgba(255,255,255,0.1)', backgroundColor: 'rgba(0,0,0,0.5)', 
+                color: 'white', boxSizing: 'border-box', outline: 'none', textAlign: 'center',
+                letterSpacing: '4px', fontWeight: '700', fontFamily: 'monospace',
+                transition: 'border 0.3s'
+              }}
+              onFocus={(e) => e.target.style.border = '1px solid #ef4444'}
+              onBlur={(e) => e.target.style.border = '1px solid rgba(255,255,255,0.1)'}
+            />
+          </div>
 
           {/* Map Preview */}
-          <div style={{ marginBottom: '30px', borderRadius: '12px', overflow: 'hidden', height: '180px', border: '1px solid #333' }}>
+          <div style={{ marginBottom: '40px', borderRadius: '16px', overflow: 'hidden', height: '200px', border: '1px solid rgba(255,255,255,0.1)', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 1000, backgroundColor: 'rgba(0,0,0,0.7)', padding: '5px 10px', borderRadius: '8px', color: '#38bdf8', fontSize: '12px', fontWeight: 'bold', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+              LIVE SATELLITE LINK
+            </div>
             {currentLocation ? (
-              <MapContainer center={currentLocation} zoom={15} style={{ height: '100%', width: '100%' }} zoomControl={false} dragging={false} scrollWheelZoom={false}>
+              <MapContainer center={currentLocation} zoom={16} style={{ height: '100%', width: '100%' }} zoomControl={false} dragging={false} scrollWheelZoom={false}>
                 <TileLayer
                   url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                  attribution='&copy; OpenStreetMap'
                 />
                 <Marker position={currentLocation} icon={redPulseIcon}>
-                  <Popup>Current Location</Popup>
+                  <Popup>Distress Location Origin</Popup>
                 </Marker>
               </MapContainer>
             ) : mapError ? (
-              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#111', color: '#ff5252', fontSize: '14px', textAlign: 'center', padding: '20px' }}>
-                Location unavailable.<br/>Please enable GPS.
+              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#020617', color: '#ef4444', fontSize: '14px', textAlign: 'center', fontFamily: '"Inter", sans-serif' }}>
+                📡 SAT-LINK FAILED.<br/>Ensure GPS is enabled.
               </div>
             ) : (
-              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#111', color: '#888', fontSize: '14px' }}>
-                Acquiring GPS Signal...
+              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#020617', color: '#38bdf8', fontSize: '14px', fontFamily: '"Inter", sans-serif', animation: 'pulse 1s infinite' }}>
+                Acquiring GPS Lock...
               </div>
             )}
           </div>
@@ -169,32 +169,36 @@ function Panic() {
               disabled={loading}
               className="panic-btn"
               style={{ 
-                width: '200px', height: '200px', borderRadius: '50%', 
-                backgroundColor: loading ? '#b71c1c' : '#e53935', 
-                color: 'white', fontSize: '28px', fontWeight: '900', 
-                border: '8px solid #ffcdd2', cursor: loading ? 'not-allowed' : 'pointer', 
-                transition: 'all 0.2s', margin: '0 auto', display: 'flex',
-                alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '10px',
-                textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                width: '220px', height: '220px', borderRadius: '50%', 
+                color: 'white', fontSize: '36px', fontWeight: '900', 
+                border: '10px solid #fca5a5', cursor: loading ? 'not-allowed' : 'pointer', 
+                transition: 'all 0.3s', margin: '0 auto', display: 'flex',
+                alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '15px',
+                textShadow: '0 4px 10px rgba(0,0,0,0.5)', letterSpacing: '2px'
               }}>
-              {loading ? <><Spinner size={30} /> <span style={{fontSize: '18px'}}>SENDING...</span></> : 'SOS'}
+              {loading ? <><Spinner size={40} /> <span style={{fontSize: '20px'}}>SENDING</span></> : 'SOS'}
             </button>
           ) : (
             <div style={{ 
-              padding: '25px', borderRadius: '12px', 
-              backgroundColor: status.success ? '#1b5e20' : '#b71c1c',
-              border: `1px solid ${status.success ? '#4caf50' : '#ff5252'}`
+              padding: '30px', borderRadius: '16px', 
+              backgroundColor: status.success ? 'rgba(22, 101, 52, 0.2)' : 'rgba(153, 27, 27, 0.2)',
+              border: `1px solid ${status.success ? '#22c55e' : '#ef4444'}`,
+              animation: 'fadeIn 0.5s ease'
             }}>
-              <h3 style={{ color: 'white', margin: '0 0 10px 0', fontSize: '22px' }}>
-                {status.success ? '✓ DISPATCH NOTIFIED' : '⚠ ALERT FAILED'}
+              <h3 style={{ color: status.success ? '#4ade80' : '#fca5a5', margin: '0 0 15px 0', fontSize: '24px', letterSpacing: '1px' }}>
+                {status.success ? '✓ UNIT DISPATCHED' : '⚠ ALERT FAILED'}
               </h3>
-              <p style={{ color: '#eee', margin: '0 0 20px 0', fontSize: '15px' }}>{status.message}</p>
+              <p style={{ color: '#cbd5e1', margin: '0 0 25px 0', fontSize: '16px', fontFamily: '"Inter", sans-serif', lineHeight: 1.5 }}>{status.message}</p>
               
               <button onClick={() => setStatus(null)}
                 style={{ 
-                  padding: '12px 25px', backgroundColor: 'rgba(255,255,255,0.2)', 
-                  color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' 
-                }}>
+                  width: '100%', padding: '16px', backgroundColor: 'rgba(255,255,255,0.1)', 
+                  color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold',
+                  letterSpacing: '1px', transition: 'background 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+              >
                 RESET SYSTEM
               </button>
             </div>
