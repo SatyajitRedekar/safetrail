@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
-import { MapContainer, TileLayer, Circle, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -17,6 +17,7 @@ function Dashboard() {
   const [alerts, setAlerts] = useState([]);
   const [tourists, setTourists] = useState([]);
   const [selectedFir, setSelectedFir] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [selectedTourist, setSelectedTourist] = useState(null);
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
   const [broadcastMessage, setBroadcastMessage] = useState('');
@@ -215,26 +216,38 @@ function Dashboard() {
             <div style={{ height: '450px', width: '100%', position: 'relative' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1, pointerEvents: 'none', boxShadow: 'inset 0 0 40px rgba(2, 6, 23, 0.8)' }}></div>
               <MapContainer center={[20.5937, 78.9629]} zoom={5} style={{ height: '100%', width: '100%', backgroundColor: '#020617' }} zoomControl={false}>
-                <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png" />
+                <TileLayer 
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' 
+                />
                 
-                {/* Simulated Heatmap Cores */}
-                <Circle center={[28.7041, 77.1025]} pathOptions={{ color: 'transparent', fillColor: '#ef4444', fillOpacity: 0.3 }} radius={100000} />
-                <Circle center={[28.7041, 77.1025]} pathOptions={{ color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.6, weight: 1 }} radius={40000} />
+                {tourists.map((t, idx) => {
+                  const lat = t.location?.lat || t.location?.latitude;
+                  const lng = t.location?.lng || t.location?.longitude;
+                  return lat && lng ? (
+                    <Marker key={`tourist-${idx}`} position={[lat, lng]}>
+                      <Popup>
+                        <strong>{t.name}</strong><br/>
+                        Digital ID: {t.digitalId}<br/>
+                        Status: Safe
+                      </Popup>
+                    </Marker>
+                  ) : null;
+                })}
                 
-                <Circle center={[19.0760, 72.8777]} pathOptions={{ color: 'transparent', fillColor: '#f59e0b', fillOpacity: 0.3 }} radius={80000} />
-                <Circle center={[19.0760, 72.8777]} pathOptions={{ color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.6, weight: 1 }} radius={30000} />
-                
-                {tourists.map((t, idx) => (
-                  t.location && t.location.latitude ? (
-                    <Circle key={`tourist-${idx}`} center={[t.location.latitude, t.location.longitude]} pathOptions={{ color: '#38bdf8', fillColor: '#38bdf8', fillOpacity: 1, weight: 2 }} radius={15000} />
-                  ) : null
-                ))}
-                
-                {alerts.map((a, idx) => (
-                  a.location && a.location.latitude ? (
-                    <Circle key={`alert-${idx}`} center={[a.location.latitude, a.location.longitude]} pathOptions={{ color: '#ef4444', fillColor: '#ef4444', fillOpacity: 1, weight: 3 }} radius={25000} />
-                  ) : null
-                ))}
+                {alerts.map((a, idx) => {
+                  const lat = a.location?.lat || a.location?.latitude;
+                  const lng = a.location?.lng || a.location?.longitude;
+                  return lat && lng ? (
+                    <Marker key={`alert-${idx}`} position={[lat, lng]}>
+                      <Popup>
+                        <strong style={{ color: '#ef4444' }}>{a.name}</strong><br/>
+                        Digital ID: {a.digitalId}<br/>
+                        <span style={{ color: '#ef4444' }}>Status: SOS TRIGGERED</span>
+                      </Popup>
+                    </Marker>
+                  ) : null;
+                })}
               </MapContainer>
             </div>
           </div>

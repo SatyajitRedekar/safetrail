@@ -21,6 +21,8 @@ function Home() {
   const [geoError, setGeoError] = useState("");
   const [nearbyPlaces, setNearbyPlaces] = useState([]);
   const [loadingPlaces, setLoadingPlaces] = useState(true);
+  const [newsList, setNewsList] = useState([]);
+  const [loadingNews, setLoadingNews] = useState(true);
 
   const fetchNearbyPlaces = async (lat, lon) => {
     try {
@@ -49,7 +51,19 @@ function Home() {
     setLoadingPlaces(false);
   };
 
+  const fetchNews = async () => {
+    try {
+      const res = await fetch('https://saurav.tech/NewsAPI/top-headlines/category/general/in.json');
+      const data = await res.json();
+      setNewsList(data.articles?.slice(0, 4) || []);
+    } catch (err) {
+      console.error("Failed to fetch news", err);
+    }
+    setLoadingNews(false);
+  };
+
   useEffect(() => {
+    fetchNews();
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -227,6 +241,49 @@ function Home() {
           ) : (
             <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(15px)', border: '1px solid rgba(255,255,255,0.1)', textAlign: 'center', padding: '40px', borderRadius: '20px', opacity: 0.7 }}>
               No nearby attractions found within 10km.
+            </div>
+          )}
+        </section>
+
+        {/* Local News & Updates */}
+        <section style={{ marginBottom: '80px' }}>
+          <h2 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '32px', marginBottom: '30px' }}>📰 Local News & Updates</h2>
+          {loadingNews ? (
+            <div style={{ textAlign: 'center', padding: '60px', opacity: 0.7 }}>
+              <div style={{ fontSize: '48px', animation: 'pulse 1s infinite' }}>📰</div>
+              <p style={{ fontSize: '18px', marginTop: '15px' }}>Fetching latest headlines...</p>
+            </div>
+          ) : newsList.length > 0 ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px' }}>
+              {newsList.map((news, idx) => (
+                <div key={idx} style={{ 
+                  backgroundColor: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(15px)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '20px', overflow: 'hidden', padding: 0, cursor: 'pointer',
+                  transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s'
+                }}
+                onClick={() => window.open(news.url, '_blank')}
+                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-10px)'; e.currentTarget.style.boxShadow = '0 30px 60px rgba(0,0,0,0.4)'; }}
+                onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+                >
+                  {news.urlToImage && (
+                    <div style={{ height: '180px', backgroundColor: 'rgba(0,0,0,0.2)' }}>
+                      <img src={news.urlToImage} alt={news.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => e.target.style.display = 'none'} />
+                    </div>
+                  )}
+                  <div style={{ padding: '25px' }}>
+                    <div style={{ fontSize: '12px', color: '#38bdf8', fontWeight: 'bold', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>{news.source?.name || 'Local Alert'}</div>
+                    <h3 style={{ margin: '0 0 10px 0', fontSize: '18px', fontFamily: '"Outfit", sans-serif', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{news.title}</h3>
+                    <p style={{ margin: 0, fontSize: '14px', color: '#cbd5e1', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {news.description || 'Click to read full story...'}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(15px)', border: '1px solid rgba(255,255,255,0.1)', textAlign: 'center', padding: '40px', borderRadius: '20px', opacity: 0.7 }}>
+              Currently no news updates available.
             </div>
           )}
         </section>

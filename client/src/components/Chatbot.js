@@ -19,10 +19,10 @@ function Chatbot() {
     // Call Real AI Backend
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/chat',
+        'http://localhost:5000/api/ai/chat',
         { message: userMsg }
       );
-      const reply = response.data.reply;
+      const reply = response.data.response;
       setMessages(prev => [...prev, { text: reply, isBot: true }]);
     } catch (err) {
       setMessages(prev => [...prev, { text: "Connection error. Please try again later.", isBot: true }]);
