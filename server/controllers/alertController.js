@@ -37,3 +37,13 @@ exports.getAlerts = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
+
+exports.deleteAlert = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Alert.findByIdAndDelete(id);
+    res.json({ message: 'Alert deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};

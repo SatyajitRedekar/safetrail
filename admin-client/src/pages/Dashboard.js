@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polygon, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -22,6 +22,18 @@ function Dashboard() {
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
   const [broadcastMessage, setBroadcastMessage] = useState('');
   const [broadcastSeverity, setBroadcastSeverity] = useState('warning');
+  const [anomalies, setAnomalies] = useState([]);
+  const [isScanning, setIsScanning] = useState(false);
+  const [searchId, setSearchId] = useState('');
+  
+  // Zone Drawing State
+  const [dbZones, setDbZones] = useState([]);
+  const [isDrawingMode, setIsDrawingMode] = useState(false);
+  const [currentPolygon, setCurrentPolygon] = useState([]);
+  const [showZoneModal, setShowZoneModal] = useState(false);
+  const [newZoneName, setNewZoneName] = useState('');
+  const [newZoneType, setNewZoneType] = useState('HIGH_RISK');
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +47,8 @@ function Dashboard() {
         .then(res => setAlerts(res.data)).catch(console.log);
       axios.get('http://localhost:5000/api/tourists/')
         .then(res => setTourists(res.data)).catch(console.log);
+      axios.get('http://localhost:5000/api/zones/')
+        .then(res => setDbZones(res.data)).catch(console.log);
     };
     fetchData();
     const interval = setInterval(fetchData, 30000);
@@ -50,9 +64,111 @@ function Dashboard() {
     return Math.min(Math.round((count / maxCapacity) * 100) + 20, 100); 
   };
 
+  const runAnomalyScan = async () => {
+    setIsScanning(true);
+    try {
+      const res = await axios.post('http://localhost:5000/api/tourists/analyze');
+      setAnomalies(res.data.flaggedTourists || []);
+      const resT = await axios.get('http://localhost:5000/api/tourists/');
+      setTourists(resT.data);
+    } catch (e) {
+      console.log(e);
+    }
+    setTimeout(() => setIsScanning(false), 1000); // Artificial delay for effect
+  };
+
+  const simulateDropOff = async (digitalId) => {
+    try {
+      const dropOffDate = new Date();
+      dropOffDate.setHours(dropOffDate.getHours() - 13); // 13 hours ago -> MISSING
+      await axios.put(`http://localhost:5000/api/tourists/${digitalId}/ping`, { simulatedLastPing: dropOffDate.toISOString() });
+      runAnomalyScan();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleDeleteAlert = async (id) => {
+    if (window.confirm('Are you sure you want to dismiss this incident alert?')) {
+      try {
+        await axios.delete(`http://localhost:5000/api/alerts/${id}`);
+        setAlerts(alerts.filter(a => a._id !== id));
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
+  const handleDeleteTourist = async (id) => {
+    if (window.confirm('Are you sure you want to remove this tourist from the registry?')) {
+      try {
+        await axios.delete(`http://localhost:5000/api/tourists/${id}`);
+        setTourists(tourists.filter(t => t._id !== id));
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
+  const handleSaveZone = async () => {
+    try {
+      const res = await axios.post('http://localhost:5000/api/zones/', {
+        name: newZoneName,
+        type: newZoneType,
+        coordinates: currentPolygon
+      });
+      setDbZones([res.data, ...dbZones]);
+      setIsDrawingMode(false);
+      setCurrentPolygon([]);
+      setShowZoneModal(false);
+      setNewZoneName('');
+      setNewZoneType('HIGH_RISK');
+    } catch (e) {
+      alert(e.response?.data?.message || 'Error saving zone');
+    }
+  };
+
+  const handleDeleteZone = async (id) => {
+    if (window.confirm('Are you sure you want to delete this custom zone?')) {
+      try {
+        await axios.delete(`http://localhost:5000/api/zones/${id}`);
+        setDbZones(dbZones.filter(z => z._id !== id));
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
+  const MapClickHandler = () => {
+    useMapEvents({
+      click(e) {
+        if (isDrawingMode) {
+          setCurrentPolygon(prev => [...prev, { lat: e.latlng.lat, lng: e.latlng.lng }]);
+        }
+      },
+    });
+    return null;
+  };
+
   const delhiDensity = getZoneDensity(28.7041, 77.1025, 5);
   const mumbaiDensity = getZoneDensity(19.0760, 72.8777, 5);
   const goaDensity = getZoneDensity(15.2993, 74.1240, 5);
+
+  const getPolygonDensity = (polygonCoords, maxCapacity = 5) => {
+    if (!polygonCoords || polygonCoords.length === 0) return 15;
+    const lats = polygonCoords.map(c => c.lat);
+    const lngs = polygonCoords.map(c => c.lng);
+    const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+    const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
+    
+    const count = tourists.filter(t => {
+      const lat = t.location?.lat || t.location?.latitude;
+      const lng = t.location?.lng || t.location?.longitude;
+      if (!lat || !lng) return false;
+      return lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng;
+    }).length;
+    return Math.min(Math.round((count / maxCapacity) * 100) + 15, 100); 
+  };
 
   const generateEFIRPdf = () => {
     if (!selectedFir) return;
@@ -71,10 +187,10 @@ function Dashboard() {
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
     
-    const touristName = selectedFir.name || 'Unknown Tourist';
-    const digitalId = selectedFir.digitalId || 'N/A';
-    const lat = selectedFir.location?.latitude?.toFixed(5) || 'Unknown';
-    const lng = selectedFir.location?.longitude?.toFixed(5) || 'Unknown';
+    const touristName = selectedFir.touristId?.name || selectedFir.name || 'Unknown Tourist';
+    const digitalId = selectedFir.touristId?.digitalId || selectedFir.digitalId || 'N/A';
+    const lat = (selectedFir.location?.lat || selectedFir.location?.latitude || 0).toFixed(5);
+    const lng = (selectedFir.location?.lng || selectedFir.location?.longitude || 0).toFixed(5);
     
     doc.text(`E-FIR Reference No: ST-${Math.floor(Math.random() * 100000)}`, 20, 50);
     doc.text(`Date & Time: ${new Date().toLocaleString()}`, 20, 60);
@@ -161,7 +277,7 @@ function Dashboard() {
       </div>
 
       <div style={{ padding: '30px 40px', maxWidth: '1600px', margin: '0 auto' }}>
-        
+
         {/* Top KPI Row */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '30px' }}>
           <KPICard 
@@ -215,11 +331,49 @@ function Dashboard() {
             </div>
             <div style={{ height: '450px', width: '100%', position: 'relative' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1, pointerEvents: 'none', boxShadow: 'inset 0 0 40px rgba(2, 6, 23, 0.8)' }}></div>
+              
+              <div style={{ position: 'absolute', top: 15, right: 15, zIndex: 1000 }}>
+                {!isDrawingMode ? (
+                  <button onClick={() => setIsDrawingMode(true)} style={{ ...actionBtnStyle, backgroundColor: '#38bdf8', color: '#0f172a', border: 'none', padding: '10px 15px', boxShadow: '0 4px 10px rgba(56, 189, 248, 0.4)' }}>+ DRAW NEW ZONE</button>
+                ) : (
+                  <div style={{ display: 'flex', gap: '10px', backgroundColor: 'rgba(2, 6, 23, 0.8)', padding: '10px', borderRadius: '8px', border: '1px solid #38bdf8' }}>
+                    <div style={{ color: 'white', fontSize: '12px', display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+                      {currentPolygon.length < 3 ? `Click map to add points (${currentPolygon.length}/3 min)` : `Points: ${currentPolygon.length}`}
+                    </div>
+                    {currentPolygon.length >= 3 && (
+                      <button onClick={() => setShowZoneModal(true)} style={{ ...actionBtnStyle, backgroundColor: '#10b981', color: 'white', border: 'none' }}>FINISH ZONE</button>
+                    )}
+                    <button onClick={() => { setIsDrawingMode(false); setCurrentPolygon([]); }} style={{ ...actionBtnStyle, backgroundColor: '#ef4444', color: 'white', border: 'none' }}>CANCEL</button>
+                  </div>
+                )}
+              </div>
+
               <MapContainer center={[20.5937, 78.9629]} zoom={5} style={{ height: '100%', width: '100%', backgroundColor: '#020617' }} zoomControl={false}>
                 <TileLayer 
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' 
                 />
+                
+                <MapClickHandler />
+
+                {/* Render Saved Zones */}
+                {dbZones.map((z, idx) => {
+                  const colors = { HIGH_RISK: '#ef4444', WARNING: '#f59e0b', RESTRICTED: '#8b5cf6', SAFE: '#10b981' };
+                  const color = colors[z.type] || '#38bdf8';
+                  return (
+                    <Polygon key={`zone-${idx}`} positions={z.coordinates.map(c => [c.lat, c.lng])} pathOptions={{ color, fillColor: color, fillOpacity: 0.35, weight: 2 }}>
+                      <Popup>
+                        <strong style={{ color }}>{z.name}</strong><br/>
+                        Type: {z.type.replace('_', ' ')}
+                      </Popup>
+                    </Polygon>
+                  );
+                })}
+
+                {/* Render Currently Drawing Zone */}
+                {currentPolygon.length > 0 && (
+                  <Polygon positions={currentPolygon.map(c => [c.lat, c.lng])} pathOptions={{ color: '#38bdf8', fillColor: '#38bdf8', fillOpacity: 0.4, dashArray: '5, 10' }} />
+                )}
                 
                 {tourists.map((t, idx) => {
                   const lat = t.location?.lat || t.location?.latitude;
@@ -265,6 +419,16 @@ function Dashboard() {
               <DensityBar label="Mumbai Gateway" density={mumbaiDensity} location="West Zone" />
               <DensityBar label="Goa Coastal Belt" density={goaDensity} location="South-West Zone" />
               
+              {dbZones.map((z) => (
+                <DensityBar 
+                  key={z._id} 
+                  label={z.name} 
+                  density={getPolygonDensity(z.coordinates)} 
+                  location={z.type.replace('_', ' ')} 
+                  onDelete={() => handleDeleteZone(z._id)} 
+                />
+              ))}
+              
               <div style={{ marginTop: 'auto', backgroundColor: 'rgba(14, 165, 233, 0.05)', padding: '16px', borderRadius: '8px', border: '1px solid rgba(14, 165, 233, 0.1)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path></svg>
@@ -275,6 +439,85 @@ function Dashboard() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* AI Anomaly Scanner Engine */}
+        <div style={{ ...panelStyle, marginBottom: '30px', border: '1px solid rgba(139, 92, 246, 0.3)', boxShadow: '0 0 30px rgba(139, 92, 246, 0.1)' }}>
+          <div style={{ ...panelHeaderStyle, backgroundColor: 'rgba(139, 92, 246, 0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              <span style={{ color: '#c4b5fd', fontWeight: '800' }}>AI BEHAVIORAL ANOMALY SCANNER</span>
+            </div>
+            <button 
+              onClick={runAnomalyScan}
+              disabled={isScanning}
+              style={{ ...actionBtnStyle, backgroundColor: '#8b5cf6', color: 'white', border: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              {isScanning ? 'SCANNING NODE NETWORK...' : 'RUN GLOBAL SCAN'}
+            </button>
+          </div>
+          <div style={{ padding: '24px', display: 'flex', gap: '20px' }}>
+            <div style={{ flex: 1 }}>
+              <h4 style={{ margin: '0 0 15px 0', color: '#cbd5e1', fontSize: '13px' }}>FLAGGED INDIVIDUALS</h4>
+              {anomalies.length === 0 ? (
+                <div style={{ padding: '20px', backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '8px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>
+                  {isScanning ? 'ANALYZING...' : 'NO ANOMALIES DETECTED IN LAST SCAN'}
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gap: '10px' }}>
+                  {anomalies.map((a, i) => (
+                    <div key={i} style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '12px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <div style={{ color: 'white', fontWeight: 'bold' }}>{a.name} <span style={{ color: '#94a3b8', fontSize: '12px', marginLeft: '10px' }}>{a.digitalId}</span></div>
+                        <div style={{ color: '#fca5a5', fontSize: '11px', marginTop: '4px', fontWeight: '600' }}>CRITICAL: {a.anomalyStatus}</div>
+                      </div>
+                      <button style={{ ...actionBtnStyle, backgroundColor: '#ef4444', color: 'white' }}>DISPATCH UNIT</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <div style={{ width: '350px', backgroundColor: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '16px', border: '1px dashed #475569' }}>
+              <h4 style={{ margin: '0 0 10px 0', color: '#94a3b8', fontSize: '11px', letterSpacing: '1px' }}>DEV TOOLS: SIMULATION</h4>
+              <p style={{ margin: '0 0 15px 0', fontSize: '11px', color: '#cbd5e1', lineHeight: '1.4' }}>
+                Simulate a sudden GPS drop-off or prolonged inactivity to test the AI engine.
+              </p>
+              {tourists.slice(0,3).map((t, i) => (
+                 <button key={i} onClick={() => simulateDropOff(t.digitalId)} style={{ display: 'block', width: '100%', marginBottom: '8px', padding: '8px', backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: '#38bdf8', fontSize: '11px', borderRadius: '4px', cursor: 'pointer', textAlign: 'left' }}>
+                   BREAK SIGNAL: {t.name}
+                 </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Verify Digital ID Search Bar */}
+        <div style={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '40px', marginBottom: '30px', textAlign: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
+          <h2 style={{ color: '#38bdf8', fontSize: '28px', fontFamily: '"Outfit", sans-serif', letterSpacing: '1px', margin: '0 0 10px 0', textTransform: 'uppercase' }}>VERIFY DIGITAL ID</h2>
+          <p style={{ color: '#94a3b8', fontSize: '15px', margin: '0 0 30px 0' }}>Enter an Official SafeTrail ID to view the traveler's digital profile.</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', maxWidth: '600px', margin: '0 auto' }}>
+            <input 
+              type="text" 
+              placeholder="ST-XXXXXXXXXXXX" 
+              value={searchId}
+              onChange={(e) => setSearchId(e.target.value)}
+              style={{ flex: 1, padding: '14px 20px', backgroundColor: 'rgba(2, 6, 23, 0.5)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'white', fontSize: '16px', letterSpacing: '2px', outline: 'none' }}
+              onFocus={(e) => e.target.style.border = '1px solid #38bdf8'}
+              onBlur={(e) => e.target.style.border = '1px solid rgba(255,255,255,0.1)'}
+            />
+            <button 
+              onClick={() => {
+                const found = tourists.find(t => t.digitalId === searchId.trim());
+                if (found) {
+                  setSelectedTourist(found);
+                } else {
+                  alert('Digital ID not found in registry');
+                }
+              }}
+              style={{ padding: '0 30px', backgroundColor: '#0ea5e9', color: 'white', border: 'none', borderRadius: '8px', fontWeight: '700', letterSpacing: '1px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(14, 165, 233, 0.4)' }}>
+              SEARCH
+            </button>
           </div>
         </div>
 
@@ -307,19 +550,24 @@ function Dashboard() {
                     {alerts.map((alert, i) => (
                       <tr key={i} style={trStyle}>
                         <td>
-                          <div style={{ fontWeight: '500', color: '#f8fafc' }}>{alert.name}</div>
-                          <div style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>{alert.digitalId}</div>
+                          <div style={{ fontWeight: '500', color: '#f8fafc' }}>{alert.touristId?.name || alert.name || 'Unknown'}</div>
+                          <div style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>{alert.touristId?.digitalId || alert.digitalId || 'N/A'}</div>
                         </td>
                         <td style={{ fontFamily: 'monospace', color: '#94a3b8' }}>
-                          {alert.location?.latitude?.toFixed(4)}, {alert.location?.longitude?.toFixed(4)}
+                          {(alert.location?.lat || alert.location?.latitude || 0).toFixed(4)}, {(alert.location?.lng || alert.location?.longitude || 0).toFixed(4)}
                         </td>
                         <td style={{ fontSize: '12px', color: '#94a3b8' }}>{new Date(alert.createdAt).toLocaleTimeString()}</td>
                         <td>
-                          <button 
-                            onClick={() => setSelectedFir(alert)}
-                            style={actionBtnStyle}>
-                            PROCESS E-FIR
-                          </button>
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            <button 
+                              onClick={() => setSelectedFir(alert)}
+                              style={actionBtnStyle}>
+                              PROCESS E-FIR
+                            </button>
+                            <button onClick={() => handleDeleteAlert(alert._id)} style={{ ...actionBtnStyle, backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Delete Alert">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -348,6 +596,7 @@ function Dashboard() {
                       <th>DIGITAL ID</th>
                       <th>CONTACT</th>
                       <th>STATUS</th>
+                      <th>ACTION</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -358,9 +607,27 @@ function Dashboard() {
                             {t.name}
                           </span>
                         </td>
-                        <td><span style={codeBadgeStyle}>{t.digitalId}</span></td>
+                        <td>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={codeBadgeStyle}>{t.digitalId}</span>
+                            {t.blockchainHash && (
+                              <span title={`Ledger Hash: ${t.blockchainHash}`} style={{ fontSize: '12px', cursor: 'help' }}>🔗</span>
+                            )}
+                          </div>
+                        </td>
                         <td style={{ fontSize: '13px', color: '#94a3b8' }}>{t.phone}</td>
-                        <td><span style={{ fontSize: '11px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px' }}><span style={{ width: '6px', height: '6px', backgroundColor: '#10b981', borderRadius: '50%' }}></span> TRACKING</span></td>
+                        <td>
+                          {t.anomalyStatus === 'NORMAL' ? (
+                            <span style={{ fontSize: '11px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px' }}><span style={{ width: '6px', height: '6px', backgroundColor: '#10b981', borderRadius: '50%' }}></span> NORMAL</span>
+                          ) : (
+                            <span style={{ fontSize: '11px', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold' }}><span style={{ width: '6px', height: '6px', backgroundColor: '#ef4444', borderRadius: '50%', animation: 'pulse 1s infinite' }}></span> {t.anomalyStatus}</span>
+                          )}
+                        </td>
+                        <td>
+                          <button onClick={() => handleDeleteTourist(t._id)} style={{ ...actionBtnStyle, backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Delete Tourist">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -407,13 +674,105 @@ function Dashboard() {
               <span style={{ color: '#38bdf8' }}>&gt; INITIALIZING INCIDENT REPORT...</span><br/><br/>
               <strong>REF:</strong> ST-{Math.floor(Math.random() * 100000)}<br/>
               <strong>TIME:</strong> {new Date().toLocaleString()}<br/>
-              <strong>SUBJ:</strong> {selectedFir.name} [{selectedFir.digitalId}]<br/>
-              <strong>LOC:</strong> {selectedFir.location?.latitude}, {selectedFir.location?.longitude}<br/><br/>
+              <strong>SUBJ:</strong> {selectedFir.touristId?.name || selectedFir.name || 'Unknown'} [{selectedFir.touristId?.digitalId || selectedFir.digitalId || 'N/A'}]<br/>
+              <strong>LOC:</strong> {Number(selectedFir.location?.lat || selectedFir.location?.latitude || 0).toFixed(5)}, {Number(selectedFir.location?.lng || selectedFir.location?.longitude || 0).toFixed(5)}<br/><br/>
               <span style={{ color: '#ef4444' }}>! SEVERE DISTRESS SIGNAL DETECTED. IMMEDIATE RESPONSE REQUIRED.</span>
             </div>
             <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
               <button style={{ flex: 1, padding: '12px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '6px', fontWeight: '700', cursor: 'pointer' }} onClick={generateEFIRPdf}>DOWNLOAD PDF</button>
               <button style={{ flex: 1, padding: '12px', backgroundColor: 'transparent', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', cursor: 'pointer' }} onClick={() => setSelectedFir(null)}>DISMISS</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedTourist && (
+        <div style={modalOverlayStyle}>
+          <div style={{ ...modalContentStyle, width: '480px', padding: 0, overflow: 'hidden', border: '1px solid #38bdf8', boxShadow: '0 0 30px rgba(56, 189, 248, 0.2)' }}>
+            <div style={{ padding: '30px', position: 'relative', background: 'radial-gradient(circle at top right, rgba(56, 189, 248, 0.15), transparent 70%)' }}>
+              <button onClick={() => setSelectedTourist(null)} style={{ position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '20px' }}>✕</button>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <div style={{ fontSize: '10px', color: '#94a3b8', letterSpacing: '1.5px', fontWeight: '600' }}>GOVERNMENT OF INDIA</div>
+                  <div style={{ fontSize: '22px', color: 'white', fontWeight: '800', fontFamily: '"Outfit", sans-serif', letterSpacing: '1px', marginTop: '2px' }}>SAFETRAIL PASS</div>
+                </div>
+                <div style={{ fontSize: '24px', fontWeight: '800', color: 'rgba(255,255,255,0.1)', fontFamily: '"Outfit", sans-serif' }}>IN</div>
+              </div>
+
+              <div style={{ marginTop: '25px', borderBottom: '1px solid rgba(56, 189, 248, 0.3)', paddingBottom: '15px' }}>
+                <div style={{ fontSize: '11px', color: '#38bdf8', letterSpacing: '1px', fontWeight: '600', marginBottom: '5px' }}>DIGITAL ID NUMBER</div>
+                <div style={{ fontSize: '26px', color: 'white', fontWeight: '700', fontFamily: 'monospace', letterSpacing: '2px', textShadow: '0 0 10px rgba(255,255,255,0.3)' }}>{selectedTourist.digitalId}</div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px', marginTop: '25px' }}>
+                <div>
+                  <div style={{ fontSize: '10px', color: '#94a3b8', letterSpacing: '1px', marginBottom: '5px' }}>FULL NAME</div>
+                  <div style={{ fontSize: '16px', color: 'white', fontWeight: '600' }}>{selectedTourist.name}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '10px', color: '#94a3b8', letterSpacing: '1px', marginBottom: '5px' }}>PASSPORT / AADHAAR</div>
+                  <div style={{ fontSize: '16px', color: 'white', fontWeight: '600' }}>{selectedTourist.passport || 'IND123456'}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '10px', color: '#94a3b8', letterSpacing: '1px', marginBottom: '5px' }}>EMERGENCY CONTACT</div>
+                  <div style={{ fontSize: '16px', color: 'white', fontWeight: '600' }}>{selectedTourist.phone || '9888888888'}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '10px', color: '#94a3b8', letterSpacing: '1px', marginBottom: '5px' }}>RISK ZONE</div>
+                  <div style={{ fontSize: '16px', color: selectedTourist.anomalyStatus === 'NORMAL' ? '#10b981' : '#ef4444', fontWeight: '600' }}>
+                    {selectedTourist.anomalyStatus === 'NORMAL' ? 'LOW RISK' : 'HIGH RISK'}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: '35px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                <div>
+                  <div style={{ fontSize: '10px', color: '#94a3b8', letterSpacing: '1px', marginBottom: '5px' }}>ISSUE DATE</div>
+                  <div style={{ fontSize: '14px', color: 'white', fontWeight: '500' }}>{selectedTourist.createdAt ? new Date(selectedTourist.createdAt).toLocaleDateString('en-GB') : '16/05/2026'}</div>
+                </div>
+                <div style={{ display: 'flex', gap: '2px', height: '35px' }}>
+                  {[2,4,1,3,2,1,4,2,1,2,3,1,2,4,1,2,3,1,4,2].map((w, i) => (
+                    <div key={i} style={{ width: `${w}px`, backgroundColor: '#cbd5e1' }}></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showZoneModal && (
+        <div style={modalOverlayStyle}>
+          <div style={modalContentStyle}>
+            <h2 style={{ margin: '0 0 20px 0', fontSize: '18px', color: 'white', fontWeight: '600' }}>SAVE CUSTOM ZONE</h2>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={modalLabelStyle}>ZONE NAME / IDENTIFIER</label>
+              <input 
+                type="text" 
+                value={newZoneName} 
+                onChange={e => setNewZoneName(e.target.value)} 
+                placeholder="e.g. Downtown Checkpoint Alpha"
+                style={modalInputStyle} 
+              />
+            </div>
+            <div style={{ marginBottom: '25px' }}>
+              <label style={modalLabelStyle}>ZONE TYPE TAG</label>
+              <select value={newZoneType} onChange={e => setNewZoneType(e.target.value)} style={modalInputStyle}>
+                <option value="HIGH_RISK">HIGH RISK ZONE (RED)</option>
+                <option value="WARNING">WARNING ZONE (ORANGE)</option>
+                <option value="RESTRICTED">RESTRICTED ZONE (PURPLE)</option>
+                <option value="SAFE">SAFE ZONE (GREEN)</option>
+              </select>
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button 
+                onClick={handleSaveZone} 
+                disabled={!newZoneName}
+                style={{ flex: 1, padding: '12px', backgroundColor: newZoneName ? '#38bdf8' : '#334155', color: '#020617', border: 'none', borderRadius: '6px', fontWeight: '700', cursor: newZoneName ? 'pointer' : 'not-allowed' }}>
+                CONFIRM & SAVE
+              </button>
+              <button onClick={() => setShowZoneModal(false)} style={{ flex: 1, padding: '12px', backgroundColor: 'transparent', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontWeight: '600', cursor: 'pointer' }}>CANCEL</button>
             </div>
           </div>
         </div>
@@ -447,14 +806,21 @@ const KPICard = ({ title, value, trend, trendUp, color, subtext }) => (
   </div>
 );
 
-const DensityBar = ({ label, density, location }) => {
+const DensityBar = ({ label, density, location, onDelete }) => {
   const isHigh = density > 80;
   const color = isHigh ? '#ef4444' : '#38bdf8';
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
         <div>
-          <div style={{ fontSize: '14px', fontWeight: '600', color: 'white' }}>{label}</div>
+          <div style={{ fontSize: '14px', fontWeight: '600', color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {label}
+            {onDelete && (
+              <button onClick={onDelete} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '2px', display: 'flex', opacity: 0.8 }} title="Delete Zone" onMouseOver={e => e.currentTarget.style.opacity = 1} onMouseOut={e => e.currentTarget.style.opacity = 0.8}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+              </button>
+            )}
+          </div>
           <div style={{ fontSize: '11px', color: '#64748b' }}>{location}</div>
         </div>
         <div style={{ fontSize: '16px', fontFamily: 'monospace', color: color, fontWeight: '700' }}>{density}%</div>

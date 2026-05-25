@@ -11,7 +11,11 @@ const touristSchema = new mongoose.Schema({
   location: {
     lat: { type: Number },
     lng: { type: Number }
-  }
+  },
+  blockchainHash: { type: String },
+  ledgerStatus: { type: String, default: 'VERIFIED' },
+  anomalyStatus: { type: String, default: 'NORMAL' },
+  lastPing: { type: Date, default: Date.now }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Tourist', touristSchema);

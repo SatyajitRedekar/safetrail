@@ -126,7 +126,15 @@ function Profile() {
                 <div style={{ fontSize: '10px', color: '#94a3b8', letterSpacing: '2px', marginBottom: '2px' }}>GOVERNMENT OF INDIA</div>
                 <div style={{ fontSize: '20px', fontWeight: '800', color: 'white', letterSpacing: '1px' }}>SAFETRAIL PASS</div>
               </div>
-              <div style={{ fontSize: '32px' }}>🇮🇳</div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                <div style={{ fontSize: '32px' }}>🇮🇳</div>
+                {tourist.blockchainHash && (
+                  <div style={{ marginTop: '5px', display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: 'rgba(34, 197, 94, 0.2)', padding: '4px 8px', borderRadius: '4px', border: '1px solid rgba(34, 197, 94, 0.5)' }}>
+                    <span style={{ fontSize: '10px' }}>🔗</span>
+                    <span style={{ fontSize: '10px', color: '#4ade80', fontWeight: 'bold', letterSpacing: '1px' }}>VERIFIED ON LEDGER</span>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Profile Info */}
@@ -154,6 +162,15 @@ function Profile() {
                   <div style={{ fontSize: '16px', color: '#fca5a5', fontWeight: '600' }}>{tourist.riskZone}</div>
                 </div>
               </div>
+
+              {tourist.blockchainHash && (
+                <div style={{ marginTop: '20px', padding: '12px', backgroundColor: 'rgba(0,0,0,0.3)', borderRadius: '8px', border: '1px dashed rgba(56, 189, 248, 0.4)' }}>
+                  <div style={{ fontSize: '10px', color: '#38bdf8', letterSpacing: '1px', marginBottom: '4px' }}>IMMUTABLE LEDGER HASH (SHA-256)</div>
+                  <div style={{ fontSize: '11px', color: '#94a3b8', fontFamily: 'monospace', wordBreak: 'break-all' }}>
+                    {tourist.blockchainHash}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Footer / Barcode mockup */}

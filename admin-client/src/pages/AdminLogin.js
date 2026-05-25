@@ -5,6 +5,7 @@ import { useToast } from '../components/Toast';
 import Spinner from '../components/Spinner';
 
 function AdminLogin() {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/admin/login', { password });
+      const res = await axios.post('http://localhost:5000/api/admin/login', { username, password });
       localStorage.setItem('adminToken', res.data.token);
       addToast('System Access Granted', 'success');
       navigate('/dashboard');
@@ -48,10 +49,26 @@ function AdminLogin() {
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
             <div style={{ fontSize: '48px', marginBottom: '15px' }}>🔐</div>
             <h2 style={{ fontFamily: '"Outfit", sans-serif', margin: '0', fontSize: '32px', fontWeight: '700', color: 'white' }}>Authorized Login</h2>
-            <p style={{ margin: '8px 0 0 0', color: '#94a3b8', fontSize: '15px' }}>Enter dispatch password to continue</p>
+            <p style={{ margin: '8px 0 0 0', color: '#94a3b8', fontSize: '15px' }}>Enter dispatch credentials to continue</p>
           </div>
 
           <form onSubmit={handleLogin} style={{ animation: 'fadeIn 0.5s ease' }}>
+            <input 
+              type="text" 
+              placeholder="Username" 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              style={{ 
+                width: '100%', padding: '16px', fontSize: '16px', borderRadius: '12px', 
+                border: '1px solid rgba(255,255,255,0.2)', backgroundColor: 'rgba(0,0,0,0.4)', 
+                color: 'white', boxSizing: 'border-box', outline: 'none', textAlign: 'center',
+                marginBottom: '20px', transition: 'border 0.3s', fontFamily: '"Inter", sans-serif'
+              }}
+              onFocus={(e) => e.target.style.border = '1px solid #38bdf8'}
+              onBlur={(e) => e.target.style.border = '1px solid rgba(255,255,255,0.2)'}
+            />
+
             <input 
               type="password" 
               placeholder="••••••••" 
