@@ -10,6 +10,23 @@ const translations = {
   Assamese: { title: "ছেফট্রেইল", subtitle: "স্মাৰ্ট পৰ্যটক সুৰক্ষা প্ৰণালী", desc: "আপোনাৰ ভ্ৰমণত আপোনাৰ ডিজিটেল অভিভাৱক।", btnReg: "পঞ্জীয়ন কৰক", btnDash: "কমাণ্ড চেণ্টাৰ", btnSos: "জৰুৰীকালীন SOS" }
 };
 
+const RESTRICTED_ZONES = [
+  { name: "Sentinel Island (Tribal Reserve)", lat: 11.5504, lon: 92.2335, radiusKm: 10 },
+  { name: "LoC Buffer Zone (Kashmir)", lat: 34.0837, lon: 74.7973, radiusKm: 15 },
+  { name: "Bandhavgarh Core Forest", lat: 23.7225, lon: 81.0250, radiusKm: 5 },
+];
+
+const getDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // Radius of the earth in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  return R * c;
+};
+
 function Home() {
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -23,6 +40,9 @@ function Home() {
   const [loadingPlaces, setLoadingPlaces] = useState(true);
   const [newsList, setNewsList] = useState([]);
   const [loadingNews, setLoadingNews] = useState(true);
+  const [safetyScore, setSafetyScore] = useState(100);
+  const [activeGeoFence, setActiveGeoFence] = useState(null);
+  const [simulatedZone, setSimulatedZone] = useState(false);
 
   const fetchNearbyPlaces = async (lat, lon) => {
     try {
@@ -55,11 +75,51 @@ function Home() {
     try {
       const res = await fetch('https://saurav.tech/NewsAPI/top-headlines/category/general/in.json');
       const data = await res.json();
-      setNewsList(data.articles?.slice(0, 4) || []);
+      setNewsList(data.articles?.slice(0, 6) || []);
     } catch (err) {
       console.error("Failed to fetch news", err);
     }
     setLoadingNews(false);
+  };
+
+  const analyzeSafety = (lat, lon, weather) => {
+    let score = 100;
+    
+    const hour = new Date().getHours();
+    if (hour >= 22 || hour <= 5) score -= 10;
+    
+    if (weather.temperature > 40 || weather.windspeed > 40 || [71, 73, 75, 77, 85, 86, 95, 96, 99].includes(weather.weathercode)) {
+      score -= 30;
+    } else if ([51, 53, 55, 61, 63, 65, 67, 80, 81, 82].includes(weather.weathercode)) {
+      score -= 15;
+    }
+
+    let breachedZone = null;
+    for (let zone of RESTRICTED_ZONES) {
+      const dist = getDistance(lat, lon, zone.lat, zone.lon);
+      if (dist <= zone.radiusKm) {
+        breachedZone = zone;
+        score -= 50;
+        break;
+      }
+    }
+    
+    setActiveGeoFence(breachedZone);
+    setSafetyScore(Math.max(0, score));
+  };
+
+  const toggleSimulation = () => {
+    if (simulatedZone) {
+      setSimulatedZone(false);
+      if (weatherData && userLoc.lat) {
+         analyzeSafety(userLoc.lat, userLoc.lon, weatherData);
+      }
+    } else {
+      setSimulatedZone(true);
+      if (weatherData) {
+         analyzeSafety(11.5504, 92.2335, weatherData); // Simulating Sentinel Island
+      }
+    }
   };
 
   useEffect(() => {
@@ -88,6 +148,9 @@ function Home() {
             setUserLoc({ name: locName, lat, lon, hazardTitle, hazardLevel });
             setWeatherData(weather);
             setLoadingWeather(false);
+            if (!simulatedZone) {
+              analyzeSafety(lat, lon, weather);
+            }
             fetchNearbyPlaces(lat, lon);
           } catch (err) {
             setGeoError("Failed to load live data.");
@@ -163,6 +226,22 @@ function Home() {
             📍 Live Safety Intel
             {geoError && <span style={{ fontSize: '14px', color: '#fca5a5', backgroundColor: 'rgba(239, 68, 68, 0.2)', padding: '5px 10px', borderRadius: '8px' }}>{geoError}</span>}
           </h2>
+
+          {activeGeoFence && (
+            <div style={{
+              backgroundColor: '#7f1d1d', border: '2px solid #ef4444', borderRadius: '16px',
+              padding: '20px', marginBottom: '30px', animation: 'pulse 1.5s infinite',
+              display: 'flex', alignItems: 'center', gap: '20px', boxShadow: '0 0 30px rgba(239, 68, 68, 0.5)'
+            }}>
+              <div style={{ fontSize: '48px' }}>⚠️</div>
+              <div>
+                <h3 style={{ margin: '0 0 5px 0', color: 'white', fontSize: '24px', fontFamily: '"Outfit", sans-serif', letterSpacing: '1px' }}>RESTRICTED ZONE ALERT</h3>
+                <p style={{ margin: 0, color: '#fca5a5', fontSize: '16px', lineHeight: 1.5 }}>
+                  You have entered the <strong>{activeGeoFence.name}</strong> geo-fence. This area is strictly monitored or prohibited for unauthorized visitors. Please alter your route immediately!
+                </p>
+              </div>
+            </div>
+          )}
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
             {/* Weather Glass Card */}
@@ -196,6 +275,39 @@ function Home() {
               <p style={{ fontSize: '16px', lineHeight: 1.6, opacity: 0.9, margin: '0 0 15px 0' }}>{userLoc.hazardLevel}</p>
               <div style={{ fontSize: '13px', opacity: 0.6, fontFamily: 'monospace' }}>
                 {userLoc.lat ? `GPS: ${userLoc.lat.toFixed(4)}, ${userLoc.lon.toFixed(4)}` : 'Awaiting GPS...'}
+              </div>
+            </div>
+
+            {/* Safety Score Card */}
+            <div style={{ 
+              backgroundColor: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(15px)',
+              padding: '30px', borderRadius: '24px', 
+              border: '1px solid rgba(255,255,255,0.1)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '25px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+              position: 'relative', overflow: 'hidden'
+            }}>
+              <div style={{ 
+                width: '100px', height: '100px', borderRadius: '50%', flexShrink: 0,
+                border: `8px solid ${safetyScore >= 80 ? '#22c55e' : safetyScore >= 50 ? '#f59e0b' : '#ef4444'}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '32px', fontWeight: '800', fontFamily: '"Outfit", sans-serif',
+                color: safetyScore >= 80 ? '#22c55e' : safetyScore >= 50 ? '#f59e0b' : '#ef4444',
+                boxShadow: `0 0 20px ${safetyScore >= 80 ? 'rgba(34,197,94,0.3)' : safetyScore >= 50 ? 'rgba(245,158,11,0.3)' : 'rgba(239,68,68,0.3)'}`
+              }}>
+                {safetyScore}
+              </div>
+              <div>
+                <h3 style={{ margin: '0 0 5px 0', fontSize: '20px', fontFamily: '"Outfit", sans-serif' }}>Safety Score</h3>
+                <p style={{ margin: 0, fontSize: '14px', color: '#cbd5e1', opacity: 0.8, lineHeight: 1.4 }}>
+                  {safetyScore >= 80 ? 'Safe conditions for travel' : safetyScore >= 50 ? 'Exercise caution' : 'High risk! Seek shelter immediately'}
+                </p>
+                <button onClick={toggleSimulation} style={{ 
+                  marginTop: '15px', fontSize: '11px', padding: '6px 12px', backgroundColor: 'rgba(255,255,255,0.05)', 
+                  border: '1px solid rgba(255,255,255,0.2)', color: 'white', borderRadius: '6px', cursor: 'pointer', transition: 'background 0.2s' 
+                }} onMouseOver={(e) => e.target.style.background = 'rgba(255,255,255,0.1)'} onMouseOut={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'}>
+                  {simulatedZone ? 'Stop Simulation' : 'Test Geo-Fence'}
+                </button>
               </div>
             </div>
           </div>
