@@ -2,13 +2,13 @@ const Zone = require('../models/Zone');
 
 exports.createZone = async (req, res) => {
   try {
-    const { name, type, coordinates } = req.body;
+    const { name, type, coordinates, density } = req.body;
     
     if (!coordinates || coordinates.length < 3) {
       return res.status(400).json({ message: 'A zone must have at least 3 coordinates to form a polygon.' });
     }
 
-    const zone = new Zone({ name, type, coordinates });
+    const zone = new Zone({ name, type, coordinates, density });
     await zone.save();
     res.status(201).json(zone);
   } catch (error) {

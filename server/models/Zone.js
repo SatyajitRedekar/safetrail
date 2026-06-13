@@ -13,6 +13,7 @@ const zoneSchema = new mongoose.Schema({
       lng: { type: Number, required: true }
     }
   ],
+  density: { type: Number, default: null },
   createdAt: { type: Date, default: Date.now }
 });
 

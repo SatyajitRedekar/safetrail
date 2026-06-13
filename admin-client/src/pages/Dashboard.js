@@ -52,6 +52,7 @@ function Dashboard() {
   const [showZoneModal, setShowZoneModal] = useState(false);
   const [newZoneName, setNewZoneName] = useState('');
   const [newZoneType, setNewZoneType] = useState('HIGH_RISK');
+  const [newZoneDensity, setNewZoneDensity] = useState('');
 
   const navigate = useNavigate();
 
@@ -140,7 +141,8 @@ function Dashboard() {
       const res = await axios.post(`${API_URL}/api/zones/`, {
         name: newZoneName,
         type: newZoneType,
-        coordinates: currentPolygon
+        coordinates: currentPolygon,
+        density: newZoneDensity ? Number(newZoneDensity) : null
       });
       setDbZones([res.data, ...dbZones]);
       setIsDrawingMode(false);
@@ -148,6 +150,7 @@ function Dashboard() {
       setShowZoneModal(false);
       setNewZoneName('');
       setNewZoneType('HIGH_RISK');
+      setNewZoneDensity('');
     } catch (e) {
       alert(e.response?.data?.message || 'Error saving zone');
     }
@@ -457,7 +460,7 @@ function Dashboard() {
                 <DensityBar 
                   key={z._id} 
                   label={z.name} 
-                  density={getPolygonDensity(z.coordinates)} 
+                  density={z.density !== undefined && z.density !== null ? z.density : getPolygonDensity(z.coordinates)} 
                   location={z.type.replace('_', ' ')} 
                   onDelete={() => handleDeleteZone(z._id)} 
                 />
@@ -748,6 +751,18 @@ function Dashboard() {
                 <option value="RESTRICTED">RESTRICTED ZONE (PURPLE)</option>
                 <option value="SAFE">SAFE ZONE (GREEN)</option>
               </select>
+            </div>
+            <div style={{ marginBottom: '25px' }}>
+              <label style={modalLabelStyle}>CROWD DENSITY (%) (OPTIONAL)</label>
+              <input 
+                type="number" 
+                min="0" 
+                max="100" 
+                value={newZoneDensity} 
+                onChange={e => setNewZoneDensity(e.target.value)} 
+                placeholder="e.g. 75 (Leave empty for dynamic)"
+                style={modalInputStyle} 
+              />
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button 
