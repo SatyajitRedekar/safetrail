@@ -61,6 +61,10 @@ safetrail/
 │   ├── train.py            # Training script (88% accuracy)
 │   ├── evaluate.py         # Validation evaluation script
 │   └── requirements.txt    # Python requirements
+├── database/               # Relational Database SQL Scripts
+│   ├── schema.sql          # MySQL Schema
+│   ├── sample_data.sql     # Sample data script
+│   └── queries.sql         # Common queries
 ├── docs/                   # System documentation
 │   └── architecture.md     # Architecture documentation
 ├── .env.example            # Environment variables example template
