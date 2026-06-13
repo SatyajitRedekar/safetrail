@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext';
+import { API_URL } from '../config';
 
 const translations = {
   English: { title: "SafeTrail", subtitle: "Smart Tourist Safety System", desc: "Your digital guardian anywhere you travel.", btnReg: "Register Now", btnDash: "Command Center", btnSos: "Emergency SOS" },
@@ -27,6 +28,19 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
   return R * c;
 };
 
+const isPointInPolygon = (lat, lon, polygon) => {
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i].lat, yi = polygon[i].lng || polygon[i].lon;
+    const xj = polygon[j].lat, yj = polygon[j].lng || polygon[j].lon;
+    
+    const intersect = ((yi > lon) !== (yj > lon))
+        && (lat < (xj - xi) * (lon - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+};
+
 function Home() {
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -43,6 +57,7 @@ function Home() {
   const [safetyScore, setSafetyScore] = useState(100);
   const [activeGeoFence, setActiveGeoFence] = useState(null);
   const [simulatedZone, setSimulatedZone] = useState(false);
+  const [customZones, setCustomZones] = useState([]);
 
   const fetchNearbyPlaces = async (lat, lon) => {
     try {
@@ -153,6 +168,23 @@ function Home() {
           break;
         }
       }
+
+      // Check custom database zones
+      if (!breachedZone) {
+        for (let zone of customZones) {
+          if (zone.coordinates && zone.coordinates.length >= 3) {
+            if (isPointInPolygon(lat, lon, zone.coordinates)) {
+              breachedZone = zone;
+              if (zone.type === 'HIGH_RISK' || zone.type === 'RESTRICTED') {
+                score -= 50;
+              } else if (zone.type === 'WARNING') {
+                score -= 25;
+              }
+              break;
+            }
+          }
+        }
+      }
     }
     
     setActiveGeoFence(breachedZone);
@@ -174,6 +206,26 @@ function Home() {
       }
     }
   };
+
+  useEffect(() => {
+    const fetchCustomZones = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/zones`);
+        const data = await res.json();
+        setCustomZones(data || []);
+      } catch (err) {
+        console.error("Failed to fetch custom zones", err);
+      }
+    };
+    fetchCustomZones();
+  }, []);
+
+  useEffect(() => {
+    if (weatherData && userLoc.lat && !simulatedZone) {
+      analyzeSafety(userLoc.lat, userLoc.lon, weatherData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customZones]);
 
   useEffect(() => {
     const cachedLoc = sessionStorage.getItem('safetrail_userLoc');
