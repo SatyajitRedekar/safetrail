@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
+import { API_URL } from '../config';
 
-const socket = io('http://localhost:5000'); // Connect to backend
+const socket = io(API_URL); // Connect to backend
 
 function BroadcastBanner() {
   const [broadcast, setBroadcast] = useState(null);

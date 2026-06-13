@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 import { useToast } from '../components/Toast';
 import Spinner from '../components/Spinner';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -51,7 +52,7 @@ function Panic() {
 
     navigator.geolocation.getCurrentPosition(async (pos) => {
       try {
-        const res = await axios.post('http://localhost:5000/api/alerts/panic', {
+        const res = await axios.post(`${API_URL}/api/alerts/panic`, {
           digitalId, latitude: pos.coords.latitude, longitude: pos.coords.longitude
         });
         setStatus({ success: true, message: res.data.message });

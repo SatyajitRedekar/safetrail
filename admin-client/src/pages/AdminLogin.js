@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../config';
 import { useToast } from '../components/Toast';
 import Spinner from '../components/Spinner';
 
@@ -15,7 +16,7 @@ function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/admin/login', { username, password });
+      const res = await axios.post(`${API_URL}/api/admin/login`, { username, password });
       localStorage.setItem('adminToken', res.data.token);
       addToast('System Access Granted', 'success');
       navigate('/dashboard');

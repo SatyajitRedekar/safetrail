@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 import { useToast } from '../components/Toast';
 import Spinner from '../components/Spinner';
 import { useAuth } from '../AuthContext';
@@ -29,7 +30,7 @@ function Register() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/tourists/register', form);
+      const res = await axios.post(`${API_URL}/api/tourists/register`, form);
       login(res.data); // Log them in automatically
       addToast('Tourist successfully registered!', 'success');
     } catch (err) {
@@ -43,7 +44,7 @@ function Register() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/tourists/login', loginForm);
+      const res = await axios.post(`${API_URL}/api/tourists/login`, loginForm);
       login(res.data);
       addToast('Login successful!', 'success');
     } catch (err) {

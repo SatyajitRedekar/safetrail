@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +20,7 @@ function Chatbot() {
     // Call Real AI Backend
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/ai/chat',
+        `${API_URL}/api/ai/chat`,
         { message: userMsg }
       );
       const reply = response.data.response;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../config';
 import { jsPDF } from 'jspdf';
 import { MapContainer, TileLayer, Marker, Popup, Polygon, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -43,11 +44,11 @@ function Dashboard() {
     }
 
     const fetchData = () => {
-      axios.get('http://localhost:5000/api/alerts/')
+      axios.get(`${API_URL}/api/alerts/`)
         .then(res => setAlerts(res.data)).catch(console.log);
-      axios.get('http://localhost:5000/api/tourists/')
+      axios.get(`${API_URL}/api/tourists/`)
         .then(res => setTourists(res.data)).catch(console.log);
-      axios.get('http://localhost:5000/api/zones/')
+      axios.get(`${API_URL}/api/zones/`)
         .then(res => setDbZones(res.data)).catch(console.log);
     };
     fetchData();
@@ -67,9 +68,9 @@ function Dashboard() {
   const runAnomalyScan = async () => {
     setIsScanning(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/tourists/analyze');
+      const res = await axios.post(`${API_URL}/api/tourists/analyze`);
       setAnomalies(res.data.flaggedTourists || []);
-      const resT = await axios.get('http://localhost:5000/api/tourists/');
+      const resT = await axios.get(`${API_URL}/api/tourists/`);
       setTourists(resT.data);
     } catch (e) {
       console.log(e);
@@ -81,7 +82,7 @@ function Dashboard() {
     try {
       const dropOffDate = new Date();
       dropOffDate.setHours(dropOffDate.getHours() - 13); // 13 hours ago -> MISSING
-      await axios.put(`http://localhost:5000/api/tourists/${digitalId}/ping`, { simulatedLastPing: dropOffDate.toISOString() });
+      await axios.put(`${API_URL}/api/tourists/${digitalId}/ping`, { simulatedLastPing: dropOffDate.toISOString() });
       runAnomalyScan();
     } catch (e) {
       console.log(e);
@@ -91,7 +92,7 @@ function Dashboard() {
   const handleDeleteAlert = async (id) => {
     if (window.confirm('Are you sure you want to dismiss this incident alert?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/alerts/${id}`);
+        await axios.delete(`${API_URL}/api/alerts/${id}`);
         setAlerts(alerts.filter(a => a._id !== id));
       } catch (e) {
         console.log(e);
@@ -102,7 +103,7 @@ function Dashboard() {
   const handleDeleteTourist = async (id) => {
     if (window.confirm('Are you sure you want to remove this tourist from the registry?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/tourists/${id}`);
+        await axios.delete(`${API_URL}/api/tourists/${id}`);
         setTourists(tourists.filter(t => t._id !== id));
       } catch (e) {
         console.log(e);
@@ -112,7 +113,7 @@ function Dashboard() {
 
   const handleSaveZone = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/zones/', {
+      const res = await axios.post(`${API_URL}/api/zones/`, {
         name: newZoneName,
         type: newZoneType,
         coordinates: currentPolygon
@@ -131,7 +132,7 @@ function Dashboard() {
   const handleDeleteZone = async (id) => {
     if (window.confirm('Are you sure you want to delete this custom zone?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/zones/${id}`);
+        await axios.delete(`${API_URL}/api/zones/${id}`);
         setDbZones(dbZones.filter(z => z._id !== id));
       } catch (e) {
         console.log(e);
