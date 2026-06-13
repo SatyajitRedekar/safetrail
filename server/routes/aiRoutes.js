@@ -31,7 +31,7 @@ router.post('/chat', async (req, res) => {
 
   // 2. Real Gemini AI Integration
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     
     // Construct a highly contextual prompt
     const systemPrompt = `You are the SafeTrail AI Assistant, an official government tourist safety guide for India. 

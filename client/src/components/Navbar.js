@@ -26,9 +26,8 @@ function Navbar() {
       </div>
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
         <Link to="/" style={linkStyle}>Home</Link>
-        <Link to="/register" style={linkStyle}>Register</Link>
-        <Link to="/profile" style={linkStyle}>Profile</Link>
-        <Link to="/dashboard" style={linkStyle}>Dashboard</Link>
+        <Link to="/visit" style={linkStyle}>Visit</Link>
+        <Link to="/register" style={linkStyle}>Profile</Link>
         <Link to="/panic" style={{ ...linkStyle, color: '#ff5252', fontWeight: 'bold' }}>Emergency SOS</Link>
         
         <select 

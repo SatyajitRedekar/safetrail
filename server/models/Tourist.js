@@ -4,6 +4,7 @@ const touristSchema = new mongoose.Schema({
   digitalId: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   email: { type: String, required: true },
+  password: { type: String, required: true },
   phone: { type: String, required: true },
   passport: { type: String, required: true },
   emergencyContact: { type: String, required: true },

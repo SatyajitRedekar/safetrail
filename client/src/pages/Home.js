@@ -46,6 +46,12 @@ function Home() {
 
   const fetchNearbyPlaces = async (lat, lon) => {
     try {
+      const cached = sessionStorage.getItem('safetrail_places');
+      if (cached) {
+        setNearbyPlaces(JSON.parse(cached));
+        setLoadingPlaces(false);
+        return;
+      }
       const geoUrl = `https://en.wikipedia.org/w/api.php?action=query&list=geosearch&gsradius=10000&gscoord=${lat}|${lon}&gslimit=6&format=json&origin=*`;
       const geoRes = await fetch(geoUrl);
       const geoData = await geoRes.json();
@@ -65,17 +71,51 @@ function Home() {
         };
       });
       setNearbyPlaces(enrichedPlaces);
+      sessionStorage.setItem('safetrail_places', JSON.stringify(enrichedPlaces));
     } catch (err) {
       console.error("Failed to fetch nearby places", err);
     }
     setLoadingPlaces(false);
   };
 
-  const fetchNews = async () => {
+  const fetchNews = async (locationStr = 'India') => {
     try {
-      const res = await fetch('https://saurav.tech/NewsAPI/top-headlines/category/general/in.json');
+      const cached = sessionStorage.getItem('safetrail_news');
+      if (cached) {
+        setNewsList(JSON.parse(cached));
+        setLoadingNews(false);
+        return;
+      }
+      const query = encodeURIComponent(locationStr + ' local news');
+      const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss/search?q=${query}`);
       const data = await res.json();
-      setNewsList(data.articles?.slice(0, 6) || []);
+      
+      let articles = [];
+      if (data.items && data.items.length > 0) {
+        articles = data.items.map(item => {
+          let title = item.title;
+          let sourceName = 'Local News';
+          const splitIdx = title.lastIndexOf(' - ');
+          if (splitIdx !== -1) {
+             sourceName = title.substring(splitIdx + 3);
+             title = title.substring(0, splitIdx);
+          }
+          return {
+            title: title,
+            description: "Click to read full story on Google News.",
+            url: item.link,
+            urlToImage: item.thumbnail || '',
+            source: { name: sourceName }
+          };
+        });
+      } else {
+        const fb = await fetch('https://saurav.tech/NewsAPI/top-headlines/category/general/in.json');
+        const fbData = await fb.json();
+        articles = fbData.articles || [];
+      }
+      const finalNews = articles.slice(0, 6);
+      setNewsList(finalNews);
+      sessionStorage.setItem('safetrail_news', JSON.stringify(finalNews));
     } catch (err) {
       console.error("Failed to fetch news", err);
     }
@@ -123,7 +163,21 @@ function Home() {
   };
 
   useEffect(() => {
-    fetchNews();
+    const cachedLoc = sessionStorage.getItem('safetrail_userLoc');
+    const cachedWeather = sessionStorage.getItem('safetrail_weather');
+    
+    if (cachedLoc && cachedWeather) {
+      const loc = JSON.parse(cachedLoc);
+      const weather = JSON.parse(cachedWeather);
+      setUserLoc(loc);
+      setWeatherData(weather);
+      setLoadingWeather(false);
+      if (!simulatedZone) analyzeSafety(loc.lat, loc.lon, weather);
+      fetchNearbyPlaces(loc.lat, loc.lon);
+      fetchNews(loc.name.split(',')[0]);
+      return;
+    }
+
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -145,24 +199,34 @@ function Home() {
             else if ([71, 73, 75, 77, 85, 86].includes(weather.weathercode)) { hazardTitle = 'High Risk - Snow'; hazardLevel = 'Check road blocks before traveling.'; } 
             else if ([95, 96, 99].includes(weather.weathercode)) { hazardTitle = 'High Risk - Thunderstorm'; hazardLevel = 'Lightning expected. Stay indoors.'; }
 
-            setUserLoc({ name: locName, lat, lon, hazardTitle, hazardLevel });
+            const locObj = { name: locName, lat, lon, hazardTitle, hazardLevel };
+            setUserLoc(locObj);
             setWeatherData(weather);
+            sessionStorage.setItem('safetrail_userLoc', JSON.stringify(locObj));
+            sessionStorage.setItem('safetrail_location', JSON.stringify({ lat, lon }));
+            sessionStorage.setItem('safetrail_weather', JSON.stringify(weather));
             setLoadingWeather(false);
             if (!simulatedZone) {
               analyzeSafety(lat, lon, weather);
             }
             fetchNearbyPlaces(lat, lon);
+            fetchNews(locName);
           } catch (err) {
             setGeoError("Failed to load live data.");
             setLoadingWeather(false); setLoadingPlaces(false);
+            fetchNews('India');
           }
         },
         () => {
           setGeoError("Location access denied. Enable GPS for alerts.");
           setLoadingWeather(false); setLoadingPlaces(false);
+          fetchNews('India');
         }
       );
+    } else {
+      fetchNews('India');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getWeatherIcon = (code) => {
@@ -195,9 +259,6 @@ function Home() {
             <button onClick={() => navigate('/register')} style={{...heroBtnStyle, background: 'linear-gradient(135deg, #0ea5e9, #2563eb)', border: 'none', boxShadow: '0 8px 20px rgba(14, 165, 233, 0.3)'}}>
               <span style={{ fontSize: '24px' }}>📝</span> {t.btnReg}
             </button>
-            <button onClick={() => navigate('/dashboard')} style={{...heroBtnStyle, background: 'linear-gradient(135deg, #10b981, #047857)', border: 'none', boxShadow: '0 8px 20px rgba(16, 185, 129, 0.3)'}}>
-              <span style={{ fontSize: '24px' }}>👮</span> {t.btnDash}
-            </button>
             <button onClick={() => {
               if (!userLoc.lat) { alert("Acquiring GPS..."); return; }
               navigator.clipboard.writeText(`https://safetrail.in/track?lat=${userLoc.lat}&lon=${userLoc.lon}&session=ST-${Math.floor(Math.random()*90000) + 10000}`);
@@ -211,8 +272,8 @@ function Home() {
           </div>
         </div>
         
-        <div style={{ position: 'absolute', bottom: '30px', zIndex: 1, opacity: 0.7, animation: 'pulse 2s infinite' }}>
-          <p style={{ fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase' }}>Scroll for Live Intel</p>
+        <div style={{ position: 'absolute', bottom: '15px', zIndex: 1, opacity: 0.7, animation: 'pulse 2s infinite' }}>
+          <p style={{ fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase' }}>Emergency Contacts</p>
           <div style={{ textAlign: 'center', fontSize: '24px' }}>↓</div>
         </div>
       </div>
@@ -220,6 +281,36 @@ function Home() {
       {/* Main Content Area */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 20px', position: 'relative', zIndex: 2 }}>
         
+        {/* Quick Emergency Contacts */}
+        <section style={{ marginBottom: '50px' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <a href="tel:112" style={{...quickBtnStyle, borderLeft: '4px solid #ef4444'}} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(239,68,68,0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+              <span style={{fontSize:'20px'}}>🚨</span> <div style={{display:'flex', flexDirection:'column'}}><span style={{fontSize:'11px', opacity:0.8, lineHeight:1}}>National</span><span style={{fontWeight:'bold', fontSize:'15px'}}>112</span></div>
+            </a>
+            <a href="tel:100" style={{...quickBtnStyle, borderLeft: '4px solid #3b82f6'}} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(59,130,246,0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+              <span style={{fontSize:'20px'}}>🚓</span> <div style={{display:'flex', flexDirection:'column'}}><span style={{fontSize:'11px', opacity:0.8, lineHeight:1}}>Police</span><span style={{fontWeight:'bold', fontSize:'15px'}}>100</span></div>
+            </a>
+            <a href="tel:102" style={{...quickBtnStyle, borderLeft: '4px solid #10b981'}} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(16,185,129,0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+              <span style={{fontSize:'20px'}}>🚑</span> <div style={{display:'flex', flexDirection:'column'}}><span style={{fontSize:'11px', opacity:0.8, lineHeight:1}}>Ambulance</span><span style={{fontWeight:'bold', fontSize:'15px'}}>102</span></div>
+            </a>
+            <a href="tel:101" style={{...quickBtnStyle, borderLeft: '4px solid #f97316'}} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(249,115,22,0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+              <span style={{fontSize:'20px'}}>🚒</span> <div style={{display:'flex', flexDirection:'column'}}><span style={{fontSize:'11px', opacity:0.8, lineHeight:1}}>Fire</span><span style={{fontWeight:'bold', fontSize:'15px'}}>101</span></div>
+            </a>
+            <a href="tel:1091" style={{...quickBtnStyle, borderLeft: '4px solid #d946ef'}} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(217,70,239,0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+              <span style={{fontSize:'20px'}}>🛡️</span> <div style={{display:'flex', flexDirection:'column'}}><span style={{fontSize:'11px', opacity:0.8, lineHeight:1}}>Women</span><span style={{fontWeight:'bold', fontSize:'15px'}}>1091</span></div>
+            </a>
+            <a href="tel:124" style={{...quickBtnStyle, borderLeft: '4px solid #fbbf24'}} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(251,191,36,0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+              <span style={{fontSize:'20px'}}>⚡</span> <div style={{display:'flex', flexDirection:'column'}}><span style={{fontSize:'11px', opacity:0.8, lineHeight:1}}>Electricity</span><span style={{fontWeight:'bold', fontSize:'15px'}}>124</span></div>
+            </a>
+            <a href="tel:125" style={{...quickBtnStyle, borderLeft: '4px solid #0ea5e9'}} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(14,165,233,0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+              <span style={{fontSize:'20px'}}>💧</span> <div style={{display:'flex', flexDirection:'column'}}><span style={{fontSize:'11px', opacity:0.8, lineHeight:1}}>Water</span><span style={{fontWeight:'bold', fontSize:'15px'}}>125</span></div>
+            </a>
+            <a href="tel:108" style={{...quickBtnStyle, borderLeft: '4px solid #8b5cf6'}} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(139,92,246,0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+              <span style={{fontSize:'20px'}}>🌪️</span> <div style={{display:'flex', flexDirection:'column'}}><span style={{fontSize:'11px', opacity:0.8, lineHeight:1}}>Disaster Mgt.</span><span style={{fontWeight:'bold', fontSize:'15px'}}>108</span></div>
+            </a>
+          </div>
+        </section>
+
         {/* Live Weather & Alerts */}
         <section style={{ marginBottom: '80px' }}>
           <h2 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '32px', marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '15px' }}>
@@ -327,10 +418,9 @@ function Home() {
                 <div key={place.id} style={{ 
                   backgroundColor: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(15px)',
                   border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '20px', overflow: 'hidden', padding: 0, cursor: 'pointer',
+                  borderRadius: '20px', overflow: 'hidden', padding: 0,
                   transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s'
                 }}
-                onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&origin=${userLoc.lat},${userLoc.lon}&destination=${place.lat},${place.lon}`, '_blank')}
                 onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-10px)'; e.currentTarget.style.boxShadow = '0 30px 60px rgba(0,0,0,0.4)'; }}
                 onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
                 >
@@ -340,12 +430,42 @@ function Home() {
                       {place.dist} km
                     </div>
                   </div>
-                  <div style={{ padding: '25px' }}>
+                  <div style={{ padding: '25px', display: 'flex', flexDirection: 'column' }}>
                     <h3 style={{ margin: '0 0 10px 0', fontSize: '20px', fontFamily: '"Outfit", sans-serif' }}>{place.title}</h3>
-                    <p style={{ margin: 0, fontSize: '14px', color: '#cbd5e1', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    <p style={{ margin: '0 0 20px 0', fontSize: '14px', color: '#cbd5e1', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                       {place.extract}
                     </p>
-                    <div style={{ marginTop: '20px', color: '#38bdf8', fontSize: '14px', fontWeight: '600' }}>Navigate →</div>
+                    
+                    {/* Action Links */}
+                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginTop: 'auto' }}>
+                      <a 
+                        href={`https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(place.title)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ 
+                          color: '#94a3b8', textDecoration: 'none', fontWeight: '700', fontSize: '14px',
+                          display: 'inline-flex', alignItems: 'center', gap: '5px', transition: 'color 0.2s'
+                        }}
+                        onMouseOver={(e) => e.target.style.color = '#cbd5e1'}
+                        onMouseOut={(e) => e.target.style.color = '#94a3b8'}
+                      >
+                        Wikipedia &#8599;
+                      </a>
+                      
+                      <a 
+                        href={`https://www.google.com/maps/dir/?api=1&origin=${userLoc.lat},${userLoc.lon}&destination=${place.lat},${place.lon}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ 
+                          color: '#38bdf8', textDecoration: 'none', fontWeight: '700', fontSize: '14px',
+                          display: 'inline-flex', alignItems: 'center', gap: '5px', transition: 'color 0.2s'
+                        }}
+                        onMouseOver={(e) => e.target.style.color = '#7dd3fc'}
+                        onMouseOut={(e) => e.target.style.color = '#38bdf8'}
+                      >
+                        Navigate &rarr;
+                      </a>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -417,6 +537,21 @@ const heroBtnStyle = {
   gap: '12px',
   transition: 'transform 0.2s, background 0.2s',
   border: '1px solid rgba(255,255,255,0.2)'
+};
+
+const quickBtnStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+  padding: '12px 20px',
+  backgroundColor: 'rgba(15, 23, 42, 0.8)',
+  backdropFilter: 'blur(10px)',
+  border: '1px solid rgba(255,255,255,0.1)',
+  borderRadius: '16px',
+  color: 'white',
+  textDecoration: 'none',
+  transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s',
+  cursor: 'pointer'
 };
 
 export default Home;

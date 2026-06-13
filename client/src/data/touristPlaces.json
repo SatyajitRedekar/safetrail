@@ -1,0 +1,410 @@
+[
+  {
+    "id": "82976",
+    "name": "Taj Mahal",
+    "description": "The Taj Mahal ( TAHJ mə-HAHL, TAHZH -⁠; Hindustani: [t̪ɑːd͡ʒ ˈmɛɦ(ɛ)l]; lit. 'Crown of the Palace') is an ivory-white marble mausoleum on the right bank of the river Yamuna in Agra, Uttar Pradesh, India. It was commissioned in 1631 by the fifth Mughal emperor, Shah Jahan (r. 1628–1658), to house the tomb of his beloved wife, Mumtaz Mahal; it also houses the tomb of Shah Jahan himself. The tomb is the centrepiece of a 17-hectare (42-acre) complex, which includes a mosque and a guest house, and is set in formal gardens bounded on three sides by a crenellated wall.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Taj_Mahal_%28Edited%29.jpeg",
+    "lat": 27.175,
+    "lon": 78.0419
+  },
+  {
+    "id": "494788",
+    "name": "Gateway of India",
+    "description": "The Gateway of India is an arch-monument, completed in 1924, on the waterfront of Mumbai, Maharashtra, India. It was erected to commemorate the landing of King George V of the United Kingdom for his coronation as the Emperor of India in December 1911 at Strand Road near Wellington Fountain. He was the first British monarch to visit India.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Mumbai_03-2016_30_Gateway_of_India.jpg",
+    "lat": 18.92198263,
+    "lon": 72.83465811
+  },
+  {
+    "id": "2072735",
+    "name": "Hawa Mahal",
+    "description": "The Hawa Mahal is a palace in the city of Jaipur, Rajasthan, India. Built from red and pink sandstone, it is on the edge of the City Palace, Jaipur, and extends to the Zenana, or women's chambers.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/East_facade_Hawa_Mahal_Jaipur_from_ground_level_%28July_2022%29_-_img_01.jpg",
+    "lat": 26.9239,
+    "lon": 75.8267
+  },
+  {
+    "id": "799638",
+    "name": "Qutb Minar",
+    "description": "The Qutb Minar, also spelled Qutub Minar and Qutab Minar, is a minaret and victory tower, built during the Delhi sultanate, and comprising the Qutb complex, a UNESCO World Heritage Site in Mehrauli, South Delhi, India. It was mostly built between 1199 and 1220, contains 399 steps, and is one of the most-frequented heritage spots in the city. After defeating Prithviraj Chauhan, the last Hindu ruler of Delhi before the Ghurid conquest of the region, Qutab-ud-din Aibak initiated the construction of the victory tower, but only managed to finish the first level. It was to mark the beginning of Islamic rule in the region. Successive dynasties of the Delhi Sultanate continued the construction, and, in 1368, Firuz Shah Tughlaq rebuilt the top parts and added a cupola.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Qutb_Minar_2022.jpg",
+    "lat": 28.524355,
+    "lon": 77.185248
+  },
+  {
+    "id": "1681410",
+    "name": "Red Fort",
+    "description": "The Red Fort (Lal Qila in Hindi; Hindi pronunciation: [laːl 'qɪlaː]) is a historic Mughal fort located in the Old Delhi area of Delhi, India. Serving as the main residence of the Mughal emperors, it was commissioned by Emperor Shah Jahan on the 12th of May 1639; the fort was constructed following his decision to shift the Mughal capital from Agra to Delhi. Originally adorned in red and white, the fort's design is attributed to Ustad Ahmad Lahori, the architect of the Taj Mahal. The Red Fort is a prominent example of Mughal architecture from Shah Jahan's reign, combining Persian and Indian architectural styles.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Delhi_fort.jpg",
+    "lat": 28.65583333,
+    "lon": 77.24083333
+  },
+  {
+    "id": "new_37613554",
+    "name": "Varanasi",
+    "description": "Varanasi (Hindi pronunciation: [ʋaːˈɾaːɳəsi], also Benares, Banaras Hindustani pronunciation: [bəˈnaːɾəs]), or Kashi, is a city on the Ganges river in northern India that has a central place in the traditions of pilgrimage, death, and mourning in the Hindu world. Located in the middle-Ganges valley in the southeastern part of the state of Uttar Pradesh, Varanasi lies on the left bank of the river....",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Varanasi%2C_India%2C_Ghats%2C_Cremation_ceremony_in_progress.jpg",
+    "lat": 25.31888889,
+    "lon": 83.01277778
+  },
+  {
+    "id": "1502289",
+    "name": "Mysore Palace",
+    "description": "Mysore Palace, also known as Amba Vilas Palace, is a historic palace and royal residence located in Mysore, Karnataka, India. It served as the official residence of the Wadiyar dynasty and the seat of the Kingdom of Mysore, and was commissioned by Krishnaraja Wodeyar IV in August 1897 following the destruction of the previous structure in a fire. The design of the palace is attributed to Henry Irwin, a British architect who had earlier designed the Madras High Court, and Edwin Wolleston Fritchley, who would later design the Lalitha Mahal. Construction of the current structure began in 1897, and lasted until 1912. It is the largest of the seven palaces in the city of Mysore and is a prominent example of Indo-Saracenic architecture, combining Indo-Islamic, Rajput and Gothic architectural styles.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Mysore_Palace_Morning.jpg",
+    "lat": 12.30388889,
+    "lon": 76.65444444
+  },
+  {
+    "id": "new_602646",
+    "name": "Great Rann of Kutch",
+    "description": "The Great Rann of Kutch (IPA: [ɾən...kət͡ːʃʰ]) is a salt marsh in the Thar Desert in the Kutch District of Gujarat, India. It is about 7500 km2 (2900 sq miles) in area and is reputed to be one of the largest salt deserts in the world. This area has been inhabited by the Kutchi people.\nThe Gujarati word Rann and Sindhi word Rinn are derived from the Sanskrit/Vedic word iriṇa (इरिण), meaning the sal...",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/65/Gujarat_Gulfs.jpg",
+    "lat": 24.08638889,
+    "lon": 70.63777778
+  },
+  {
+    "id": "903375",
+    "name": "Charminar",
+    "description": "The Charminar (lit. 'four minarets') is a monument located in Hyderabad, Telangana, India. Constructed in 1591, the landmark is a symbol of Hyderabad and officially incorporated in the emblem of Telangana. The Charminar's long history includes the existence of a mosque on its top floor for more than 434 years. While both historically and religiously significant, it is also known for its popular and busy local markets surrounding the structure, and has become one of the most frequented tourist attractions in Hyderabad. Charminar is also a site of numerous festival celebrations, such as Eid-ul-adha and Eid al-Fitr, as it is adjacent to the city's main mosque, the Makkah Masjid.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/71/Charminar_Hyderabad_1.jpg",
+    "lat": 17.36163,
+    "lon": 78.47467
+  },
+  {
+    "id": "2642",
+    "name": "Ajanta Caves",
+    "description": "The Ajanta Caves are 30 rock-cut Buddhist cave monuments dating from the second century BCE to about 480 CE in Aurangabad district of Maharashtra state in India. Ajanta Caves are a  UNESCO World Heritage Site. Universally regarded as masterpieces of Buddhist religious art, the caves include paintings and rock-cut sculptures, described as among the finest surviving examples of ancient Indian art, particularly expressive paintings that present emotions through gesture, pose and form.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Ajanta_%2863%29.jpg",
+    "lat": 20.55333333,
+    "lon": 75.70027778
+  },
+  {
+    "id": "new_1549229",
+    "name": "Havelock Island",
+    "description": "Havelock Island, officially known as Swaraj Dweep (transl. Independence Island), is one of the largest islands in Ritchie's Archipelago, to the east of Great Andaman within the Andaman Islands. It belongs to the South Andaman administrative district, part of the Indian union territory of Andaman and Nicobar Islands. The island is 41 km (25 mi) northeast of the capital city, Port Blair....",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/63/Havelock%2C_Andaman_%26_Nicobar_Islands.JPG",
+    "lat": 11.96,
+    "lon": 93
+  },
+  {
+    "id": "11470626",
+    "name": "Konark Sun Temple",
+    "description": "Konark Sun Temple is a 13th-century CE Hindu Sun temple at Konark about 35 kilometres (22 mi) northeast from Puri city on the coastline in Puri district, Odisha, India. The temple is attributed to king Narasingha Deva I of the Eastern Ganga dynasty about 1250 CE. Dedicated to the Hindu Sun-god Surya, it reflects the pinnacle of kalingan architecture and artistic excellence, what remains of the temple complex has the appearance of a 100-foot (30 m) high chariot with immense wheels and horses, all carved from stone. Once over 200 feet (61 m) high, much of the temple is now in ruins, in particular the large shikara tower over the sanctuary; at one time this rose much higher than the mandapa that remains. The structures and elements that have survived are famed for their intricate artwork, iconography, and themes, including erotic kama and mithuna scenes. Also called the Surya Devalaya, it is a classic illustration of the Odisha style of Architecture or Kalinga architecture.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/47/Konarka_Temple.jpg",
+    "lat": 19.8875,
+    "lon": 86.09472222
+  },
+  {
+    "id": "7846416",
+    "name": "Meenakshi Temple",
+    "description": "Meenakshi Temple, also known as Meenakshi Sundareswarar Temple, is a historic Hindu temple located on the southern bank of the Vaigai River in Madurai, Tamil Nadu, India. It is dedicated to Meenakshi, a form of Parvati, and her consort Sundareswarar (Shiva). The temple is theologically significant as it represents a confluence of various denominations of Hinduism such as Shaivism, Shaktism, and Vaishnavism.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e9/An_aerial_view_of_Madurai_city_from_atop_of_Meenakshi_Amman_temple.jpg",
+    "lat": 9.9197,
+    "lon": 78.1194
+  },
+  {
+    "id": "new_186729",
+    "name": "Darjeeling",
+    "description": "Darjeeling (, Nepali: [ˈdard͡ziliŋ], Bengali: [ˈdarˌdʒiliŋ]) is a city in the northernmost region of the Indian state of West Bengal. Located in the Eastern Himalayas, it has an average elevation of 2,045 metres (6,709 ft). To the west of Darjeeling lies the easternmost province of Nepal, to the east the Kingdom of Bhutan, to the north the Indian state of Sikkim, and farther north the Tibet Autono...",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/96/DarjeelingTrainFruitshop_%282%29.jpg",
+    "lat": 27.0375,
+    "lon": 88.26305556
+  },
+  {
+    "id": "285044",
+    "name": "Khajuraho Group of Monuments",
+    "description": "The Khajuraho Group of Monuments are a group of Hindu and Digambara Jain temples in Chhatarpur district, Madhya Pradesh, India. They are about 46 km (28.6mi) from Chhatarpur city, the district headquarter, 283 km (177mi) from Gwalior, 175 kilometres (109 mi) southeast of Jhansi, 10 kilometres (6.2 mi) from Khajwa and 9 kilometres (5.6 mi) from Rajnagar. The temples are famous for their Nagara-style architectural symbolism and a few erotic sculptures. ",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e7/1_Khajuraho.jpg",
+    "lat": 24.854422,
+    "lon": 79.921427
+  },
+  {
+    "id": "226050",
+    "name": "Mahabodhi Temple",
+    "description": "The Mahabodhi Temple (literally: \"Great Awakening Temple\") or the Mahābodhi Mahāvihāra, is a restored Buddhist temple in Bodh Gaya, Bihar, India, marking the location where the Buddha is said to have attained enlightenment, according to the Buddhist faith. A UNESCO World Heritage Site, The site contains a tree believed to be a descendant of the Bodhi Tree under which the Buddha gained enlightenment and has been a major pilgrimage destination of Buddhists for over two thousand years. The Mahabodhi Temple at Bodh Gaya is the holiest and most revered pilgrimage site for Buddhists worldwide.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Mahabodhitemple.jpg",
+    "lat": 24.696,
+    "lon": 84.9913
+  },
+  {
+    "id": "275014",
+    "name": "Sanchi Stupa",
+    "description": "Sanchi Stupa is a Buddhist complex, famous for its Great Stupa, on a hilltop at Sanchi Town in Raisen District of the State of Madhya Pradesh, India. It is located, about 23 kilometers from Raisen town, the district headquarter and 46 kilometres (29 mi) north-east of Bhopal, capital of Madhya Pradesh.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/East_Gateway_-_Stupa_1_-_Sanchi_Hill_2013-02-21_4398.JPG",
+    "lat": 23.479223,
+    "lon": 77.739683
+  },
+  {
+    "id": "28141959",
+    "name": "Golden Temple",
+    "description": "The Golden Temple is a gurdwara located in Amritsar, Punjab, India. It is the pre-eminent spiritual site of Sikhism and is one of its holiest sites, alongside the Gurdwara Darbar Sahib in Kartarpur and the Gurdwara Janam Asthan in Nankana Sahib, both in Punjab, Pakistan.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/94/The_Golden_Temple_of_Amrithsar_7.jpg",
+    "lat": 31.62,
+    "lon": 74.87638889
+  },
+  {
+    "id": "720662",
+    "name": "India Gate",
+    "description": "India Gate, formerly known as the All India War Memorial, is a prominent war memorial situated on the eastern edge of the ceremonial axis of New Delhi, India, officially known as Kartavya Path. It stands as a memorial commemorating 74,187 soldiers of the Indian Army who died between 1914 and 1921 in the First World War, in France, Flanders, Mesopotamia, Persia, East Africa, Gallipoli and the Third Anglo-Afghan War. Around 13,300 servicemen’s names, including those of some British soldiers and officers, are inscribed on the gate. Designed by Edwin Lutyens, the memorial draws inspiration from ancient Roman triumphal arches such as the Arch of Constantine and is frequently compared to the Arc de Triomphe in Paris. ",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/75/India_Gate_%28All_India_War_Memorial%29.jpg",
+    "lat": 28.61286389,
+    "lon": 77.22930556
+  },
+  {
+    "id": "3238314",
+    "name": "Lotus Temple",
+    "description": "The Lotus Temple is a Baháʼí House of Worship in New Delhi, India. It was completed in December 1986. Notable for its lotus-like shape, it has become a prominent attraction in the city. Like all Bahá’í Houses of Worship, the Lotus Temple is open to all people, regardless of religion or any other qualification. The building is composed of 27 free-standing marble-clad \"petals\" arranged in clusters of three to form nine sides, with nine doors opening onto a central hall with a height of slightly over 34 metres and a capacity of 1,300 people. The Lotus Temple has won numerous architectural awards and has been featured in many newspaper and magazine articles.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fc/LotusDelhi.jpg",
+    "lat": 28.553328,
+    "lon": 77.258456
+  },
+  {
+    "id": "1358308",
+    "name": "Cellular Jail",
+    "description": "The Cellular Jail, also known as 'Kālā Pānī' (transl. 'Black Water'), is a former British colonial prison in the Andaman and Nicobar Islands. The prison was used by the colonial government of India for the purpose of exiling insurgents and political prisoners. Many notable independence activists were imprisoned there during the struggle for India's independence. Today, the complex serves as a national memorial monument.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Front_View_of_Cellular_Jail%2C_Port_Blair.JPG",
+    "lat": 20.5937,
+    "lon": 78.9629
+  },
+  {
+    "id": "373445",
+    "name": "Elephanta Caves",
+    "description": "The Elephanta Caves form a collection of cave temples predominantly dedicated to the Hindu god Shiva; UNESCO has designated them as a World Heritage Site. They are located on Elephanta Island, or Gharapuri (literally meaning \"the city of the caves\"), in Mumbai Harbour, 10 kilometres (6.2 mi) east of Mumbai in the Indian state of Maharashtra. The island, about 2 kilometres (1.2 mi) west of the Jawaharlal Nehru Port, features five Hindu caves, a few Buddhist stupa mounds that date back to the 2nd century BCE, and two Buddhist caves with water tanks.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Elephanta_Caves_Trimurti.jpg",
+    "lat": 18.96333333,
+    "lon": 72.93138889
+  },
+  {
+    "id": "4733493",
+    "name": "Jaisalmer Fort",
+    "description": "Jaisalmer Fort is situated in the city of Jaisalmer, in the Indian state of Rajasthan. It is one of the very few \"living forts\" in the world (such as Carcassonne, France), as nearly one fourth of the old city's population still resides within the fort. For the better part of its 860-year history, the fort was the city of Jaisalmer. The first settlements outside the fort walls, to accommodate the growing population of Jaisalmer, are said to have come up in the 17th century.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/47/Jaisalmer_forteresse.jpg",
+    "lat": 26.9127,
+    "lon": 70.9126
+  },
+  {
+    "id": "1579676",
+    "name": "Mehrangarh",
+    "description": "Mehrangarh is a historic fort located in Jodhpur, Rajasthan, India. It stands on a hilltop, rising about 122 m (400 ft) above the surrounding plains, and the complex spans 1,200 acres (486 hectares). It was initially built around 1459 by the Rajput ruler of Rathore clan Rao Jodha, though most of the existing structure is from the 17th century built by his successors. The fort has seven gates, which includes main entrance Jai Pol (meaning 'victory gate'), built by Maharaja Man Singh to commemorate his victories over the Jaipur and Bikaner armies in 1806. The Fattehpol (lit. 'victory gate'), commemorates victory of Maharaja Ajit Singh over the Mughals. The English writer and Nobel Prize winner, Rudyard Kipling, described the fort as \"a palace that might have been built by Titans and colored by the morning sun.\"",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Mehrangarh_Fort_sanhita.jpg",
+    "lat": 26.29805556,
+    "lon": 73.01888889
+  },
+  {
+    "id": "24028167",
+    "name": "City Palace",
+    "description": "The City Palace, Jaipur is a royal residence and former administrative headquarters of the rulers of the Jaipur State in Jaipur, Rajasthan.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Chandra_Mahal%2C_City_Palace%2C_Jaipur%2C_20191218_0951_9043.jpg",
+    "lat": 26.9257,
+    "lon": 75.8236
+  },
+  {
+    "id": "17709496",
+    "name": "City Palace",
+    "description": "City Palace (Raj Mahal), Udaipur is a palace complex situated in the city of Udaipur in the Indian state of Rajasthan. It was built over a period of nearly 400 years, with contributions from several rulers of the Mewar dynasty. Its construction began in 1553, started by Maharana Udai Singh II of the Sisodia Rajput family as he shifted his capital from the erstwhile Chittor to the newfound city of Udaipur. The palace is located on the east bank of Lake Pichola and has several palaces built within its complex.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/69/Udaipur_City_Palace.jpg",
+    "lat": 20.5937,
+    "lon": 78.9629
+  },
+  {
+    "id": "14877867",
+    "name": "Lake Palace",
+    "description": "Lake Palace (formerly known as Jag Niwas Palace) is a former summer palace of the royal dynasty of Mewar, now operated as a hotel. The Lake Palace is located on the island of Jag Niwas in Lake Pichola, Udaipur, India, and its natural foundation spans 4 acres (16,000 m2).",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/32/Udaipur_Lake_Palace.jpg",
+    "lat": 24.57507,
+    "lon": 73.68022
+  },
+  {
+    "id": "322997",
+    "name": "Fatehpur Sikri",
+    "description": "Fatehpur Sikri (Hindi: [ˈfətɛɦpʊɾ ˈsiːkɾiː]) is a town in the Agra District of Uttar Pradesh, India. Situated 35.7 kilometres (22.2 mi) from the district headquarters of Agra, Fatehpur Sikri itself was founded as the capital of the Mughal Empire in 1571 by Emperor Akbar, serving this role from 1571 to 1585, when Akbar abandoned it due to a campaign in Punjab and was later completely abandoned in 1610.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Fatehput_Sikiri_Buland_Darwaza_gate_2010.jpg",
+    "lat": 27.091,
+    "lon": 77.661
+  },
+  {
+    "id": "1115045",
+    "name": "Agra Fort",
+    "description": "The Agra Fort (Qila Agra) is a historical Mughal fort in the city of Agra, also known as  Agra's Red Fort. Mughal emperor Humayun was crowned at this fort in 1530. It was later renovated by the Mughal emperor Akbar from 1565 and the present-day structure was completed in 1573. It served as the main residence of the rulers of the Mughal dynasty until 1638, when the capital was shifted from Agra to Delhi. It was also known as the \"Lal-Qila\" or \"Qila-i-Akbari\". Before being captured by the British, the last Indian rulers to have occupied it were the Marathas. In 1983, the Agra fort was inscribed as a UNESCO World Heritage Site because of its importance during Mughal rule. It is about 2.5 kilometers (1.6 mi) northwest of its more famous sister monument, the Taj Mahal. The fort can be more accurately described as a walled city. It was later renovated by Shah Jahan.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Agra_03-2016_10_Agra_Fort.jpg",
+    "lat": 27.179542,
+    "lon": 78.021101
+  },
+  {
+    "id": "4829090",
+    "name": "Gwalior Fort",
+    "description": "The Fort of Gwalior or Gwalior Fort is a 6th-century hill fort in Gwalior, India. Mughal Emperor Babur described it as the \"pearl amongst the fortresses of Hind and not even the winds could touch its masts\" due to its grandeur and magnificence. It was nicknamed as the \"Gibraltar of India\" for its impregnability and defensive structure. The fort dates back to the 5th century, perhaps earlier making it one of the oldest defense forts in India. Ancient Sanskrit inscriptions record the name of the fort as \"Gopgiri\". ",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/15/Gwalior_Fort_front.jpg",
+    "lat": 26.2303,
+    "lon": 78.1689
+  },
+  {
+    "id": "new_1230062",
+    "name": "Matheran",
+    "description": "Matheran (Pronunciation: [maːt̪ʰeɾaːn]) is a partially automobile free hill station and a municipal council in the Karjat taluka of the Raigad district located in the Indian state of Maharashtra. Matheran is part of the Mumbai Metropolitan Region, and one of the smallest hill stations in India. It is located in the Western Ghats, at an elevation of around 800 m (2,625 feet) above sea level. It is ...",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/43/Matheran_In_Clouds.jpg",
+    "lat": 18.9866,
+    "lon": 73.2679
+  },
+  {
+    "id": "new_296630",
+    "name": "Kodagu district",
+    "description": "Kodagu district (Kodava: [koɖɐɡɨ, -ʋɨ], also known by its former name Coorg, Kodava: koḍagï, koḍavï) is an administrative district in the Karnataka state of India. Before 1956, it was an administratively separate Coorg State at which point it was merged into an enlarged Mysore State.\n\n...",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/17/Tadiandamol_Valley%2C_Western_Ghats.jpg",
+    "lat": 12.4208,
+    "lon": 75.7397
+  },
+  {
+    "id": "6923347",
+    "name": "Badami cave temples",
+    "description": "The Badami cave temples are a complex of Buddhist, Hindu and Jain cave temples located in Badami, a town in the Bagalkot district in northern part of Karnataka, India. The caves are important examples of Indian rock-cut architecture, especially Badami Chalukya architecture, and the earliest date from the 6th century. Badami is a modern name and was previously known as \"Vataapi\", the capital of the early Chalukya dynasty, which ruled much of Karnataka from the 6th to the 8th century. Badami is situated on the west bank of a man-made lake ringed by an earthen wall with stone steps; it is surrounded on the north and south by forts built  during Early Chalukya and  in later times.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Vishnu_image_inside_cave_number_3_in_Badami.jpg",
+    "lat": 15.91833333,
+    "lon": 75.68416667
+  },
+  {
+    "id": "404352",
+    "name": "Pattadakal",
+    "description": "Pattadakal (Pattadakallu), also called Raktapura, is a complex of 7th and 8th century CE Hindu and Jain temples in northern Karnataka, India. Located on the west bank of the Malaprabha River in Bagalkot district, this UNESCO World Heritage Site is 23 kilometres (14 mi) from Badami and about 9.7 kilometres (6 mi) from Aihole, both of which are historically significant centres of Chalukya monuments. The monument is a protected site under Indian law and is managed by the Archaeological Survey of India (ASI).",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/03/Pattadakal_000.JPG",
+    "lat": 15.95138889,
+    "lon": 75.81472222
+  },
+  {
+    "id": "2150174",
+    "name": "Lepakshi",
+    "description": "Lepakshi is a village in the Sri Sathya Sai district of Andhra Pradesh, India. It is located 15 km (9.3 miles) east of Hindupur, 82 km (51 miles) west of Kadiri and 120 km (75 mi) north of Bangalore. The Veerabhadra Temple is located in the village.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Front_side_of_Veerabhadra_Temple%2C_Lepakshi.jpg",
+    "lat": 13.81,
+    "lon": 77.6
+  },
+  {
+    "id": "882691",
+    "name": "Gol Gumbaz",
+    "description": "Gol Gumbaz (lit. 'Round Dome'), also written Gol Gumbad, is a 17th-century mausoleum located in Bijapur (now known as Vijayapura), a city in Karnataka, India. It houses the remains of Mohammad Adil Shah, seventh sultan of the Adil Shahi dynasty, and some of his relatives. Begun in the mid-17th century, the structure never reached completion. The mausoleum is notable for its scale and exceptionally large dome. The structure is an important example of Adil Shahi architecture. ",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Gol_Gumbaj2.JPG",
+    "lat": 16.83003056,
+    "lon": 75.73609722
+  },
+  {
+    "id": "2499690",
+    "name": "Vivekananda Rock Memorial",
+    "description": "Vivekananda Rock Memorial is a monument and popular tourist attraction in Kanyakumari, India's southernmost tip. The memorial stands on one of the two rocks located about 500 meters off mainland of Vavathurai, Tamil Nadu. It was built in 1970 in honour of Swami Vivekananda, who is said to have attained enlightenment on the rock.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b6/RockMemorial.jpg",
+    "lat": 8.07808333,
+    "lon": 77.55547222
+  },
+  {
+    "id": "1688078",
+    "name": "Basilica of Bom Jesus",
+    "description": "The Basilica of Bom Jesus (Portuguese: Basílica do Bom Jesus; Goan Konkani: Borea Jezuchi Bajilika) is a Catholic basilica in Goa, in the Konkan region of India. The church is a pilgrimage centre and recognised by UNESCO as a World Heritage Site. The basilica is located in Old Goa, the former capital of Portuguese India, and holds the body of St Francis Xavier.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Front_Elevation_of_Basilica_of_Bom_Jesus.jpg",
+    "lat": 15.50087222,
+    "lon": 73.91151111
+  },
+  {
+    "id": "800083",
+    "name": "Kaziranga National Park",
+    "description": "Kaziranga National Park is a national park in the Golaghat, Sonitpur, Biswanath and Nagaon districts of the state of Assam, India. The park, which hosts two-thirds of the world's Indian rhinoceroses, is a UNESCO World Heritage Site. According to a March 2018 census conducted jointly by the Forest Department of the Government of Assam and some recognized wildlife NGOs, the rhino population in Kaziranga National Park is 2,613. It comprises 1,641 adult rhinos and 385 calves.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Beauty_of_Kaziranga_National_Park.jpg",
+    "lat": 26.66666667,
+    "lon": 93.35
+  },
+  {
+    "id": "2030324",
+    "name": "Ranthambore National Park",
+    "description": "Ranthambore National Park is a national park in the Indian state of Rajasthan. It covers a total area of 1,334 km2 (515 sq mi). It is bounded to the north by the Banas River and to the south by the Chambal River. It is named after the historic Ranthambore Fort, which lies within its boundaries in Sawai Madhopur district.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Ranthambore_National_Park.JPG",
+    "lat": 26.01733,
+    "lon": 76.50257
+  },
+  {
+    "id": "286604",
+    "name": "Jim Corbett National Park",
+    "description": "Jim Corbett National Park is a national park in the Nainital district of the state of Uttarakhand, India. It was established in 1936 as the country's first national park and is named in honour of Jim Corbett, who had played a leading role in its establishment. It was the first to come under the Project Tiger initiative and encompasses an area of 520.8 km2 (201.1 sq mi) consisting of hills, riverine belts, marshy depressions, grasslands and a large lake at an elevation range of 400–1,220 m (1,300–4,000 ft). It receives rainfall from July to September. Almost 73% of the national park is covered by dense moist deciduous forest dominated by Shorea robusta, peepal, rohini and mango trees among 110 tree species and 617 different plant species. Grasslands cover about 10% of its total area. It harbours 50 mammal species, 580 bird species and 25 reptile species. The increase in tourist activities continues to present a serious challenge to the park's ecological balance.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/78/Bengal-Tiger_Corbett_Uttarakhand_Dec-2013.jpg",
+    "lat": 29.54861111,
+    "lon": 78.93527778
+  },
+  {
+    "id": "800207",
+    "name": "Valley of Flowers National Park",
+    "description": "Valley of Flowers National Park is an Indian national park which was established in 1982. It is located in Chamoli in the state of Uttarakhand and is known for its meadows of endemic alpine flowers and the variety of flora. This richly diverse area is also home to rare and endangered animals, including the Asiatic black bear, snow leopard, musk deer, brown bear, red fox and blue sheep. Birds found in the park include Himalayan monal pheasant and other high-altitude birds.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/50/Valley_of_flowers_national_park%2C_Uttarakhand%2C_India_03_%28edit%29.jpg",
+    "lat": 30.73,
+    "lon": 79.6175
+  },
+  {
+    "id": "1490376",
+    "name": "Sundarbans",
+    "description": "Sundarbans (Bengali: সুন্দরবন; pronounced ) is a mangrove forest area in the Ganges Delta formed by the confluence of the Ganges, Brahmaputra and Meghna Rivers in the Bay of Bengal. It spans the area from the Hooghly River in India's state of West Bengal to the Baleswar River in Bangladesh's Khulna Division. It comprises closed and open mangrove forests, land used for agricultural purpose, mudflats and barren land, and is intersected by multiple tidal streams and channels. Spread across 10,277 km2 (3,968 sq mi), it is the world's largest mangrove forest. It covers over 6,017 km2 (2,323 sq mi) in Bangladesh's Khulna Division. In West Bengal's Presidency division, they extend over 4,260 km2 (1,640 sq mi) in the South 24 Parganas and North 24 Parganas districts.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Save_the_sundarbans_20.jpg",
+    "lat": 21.75,
+    "lon": 88.75
+  },
+  {
+    "id": "2002248",
+    "name": "Dal Lake",
+    "description": "Dal (Urdu pronunciation: [ɖəl] ; Kashmiri pronunciation: [ɖal]) is a freshwater lake in Srinagar, the summer capital of Jammu and Kashmir in Indian-administered Kashmir. It is an urban lake, the second largest lake in Jammu and Kashmir, and the most visited place in Srinagar by tourists and locals. It is integral to tourism and recreation in the Kashmir Valley and is variously known as the \"Lake of Flowers\", \"Jewel in the crown of Kashmir\" or \"Srinagar's Jewel\". The lake is also an important source for commercial operations in fishing and water plant harvesting.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Dal_Lake_Hazratbal_Srinagar.jpg",
+    "lat": 34.12,
+    "lon": 74.87
+  },
+  {
+    "id": "1901839",
+    "name": "Pangong Tso",
+    "description": "Pangong Tso or Pangong Lake (Tibetan: སྤང་གོང་མཚོ; Chinese: 班公错; pinyin: Bān gōng cuò; is an endorheic lake spanning eastern Ladakh and West Tibet situated at an elevation of 4,225 m (13,862 ft). It is 134 km (83 mi) long. Approximately 50% of the length of the overall lake lies within Tibet administered by China, 40% in Indian-administered Ladakh; the remaining 10% is disputed and is a de facto buffer zone between India and China. The lake is 5 km (3.1 mi) wide at its broadest point. All together it covers almost 700 km2. During winter the lake freezes completely, despite being saline water. It has a land-locked basin separated from the Indus River basin by a small elevated ridge, but is believed to have been part of the Indus basin in prehistoric times.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/66/ISS054-E-7809_-_View_of_Earth_%28cropped%29.jpg",
+    "lat": 33.71794167,
+    "lon": 78.8968
+  },
+  {
+    "id": "new_69973",
+    "name": "Ooty",
+    "description": "Ooty (Tamil: [uːʈ(ː)i] ; officially Udagamandalam (Tamil: [uðɐhɐmɐɳɖɐlɐm]), anglicized: Ootacamund , abbreviated as Udagai, Tamil: [uðɐhɐi]) is a town and municipality in the Nilgiris district of the Indian state of Tamil Nadu. It is located 86 km (53 mi) northwest of Coimbatore, and is the headquarters of Nilgiris district. Situated in the Nilgiri hills, it is known by the epithet \"King of all th...",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/d/db/Ooty_lake.jpg",
+    "lat": 11.41,
+    "lon": 76.7
+  },
+  {
+    "id": "888523",
+    "name": "Rohtang Pass",
+    "description": "Rohtang Pass  (Rohtang , literally meaning \"pile of corpses\") is a high mountain pass (elevation 3,980 m (13,058 ft)) on the eastern end of the Pir Panjal Range of the Himalayas around 51 km (32 mi) from Manali in the Indian state of Himachal Pradesh, the pass serves as a vital link between the verdant Kullu Valley and the arid, high-altitude regions of Lahaul and Spiti Valleys of Himachal Pradesh, India.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Kullu_Valley_from_Rohtang_Pass%2C_India.jpg",
+    "lat": 32.37138889,
+    "lon": 77.24638889
+  },
+  {
+    "id": "1547591",
+    "name": "Jog Falls",
+    "description": "Jog Falls (also known as Gerusoppa Falls, Joga Jalapata, or Jogada Gundi) is a series of large, segmented waterfalls on the Sharavati River in Karnataka state of India, created by the river plunging approximately 253 metres (830 ft) and splitting into four distinct cascades (Raja, Rani, Roarer, and Rocket). The waterfalls are situated in the Sagar taluk of the Shivamogga district.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Jog_Falls_05092016.jpg",
+    "lat": 20.5937,
+    "lon": 78.9629
+  },
+  {
+    "id": "23558015",
+    "name": "Tawang Monastery",
+    "description": "Tawang Monastery is a Buddhist monastery located in Tawang, Arunachal Pradesh, India. It is the largest monastery in the country. It is situated in the valley of the Tawang Chu, in close proximity to the Chinese and Bhutanese border.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/92/TawangMonastery.jpg",
+    "lat": 27.58638889,
+    "lon": 91.8575
+  },
+  {
+    "id": "new_1",
+    "name": "Munnar",
+    "description": "Munnar is a town and hill station located in the Idukki district of the southwestern Indian state of Kerala. Munnar is situated at around 1,600 metres (5,200 ft) above mean sea level.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Munnar_hillstation_kerala.jpg/800px-Munnar_hillstation_kerala.jpg",
+    "lat": 10.0889,
+    "lon": 77.0595
+  },
+  {
+    "id": "new_2",
+    "name": "Shimla",
+    "description": "Shimla is the capital and the largest city of the northern Indian state of Himachal Pradesh. It is a popular hill station and was declared as the summer capital of British India in 1864.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Shimla_in_Winter.jpg/800px-Shimla_in_Winter.jpg",
+    "lat": 31.1048,
+    "lon": 77.1734
+  }
+]
