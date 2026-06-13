@@ -1,185 +1,137 @@
-Here's a complete README for your friends. Tell Antigravity to replace `README.md` with this:
-
-```markdown
-# 🛡️ SafeTrail - Smart Tourist Safety Monitoring System
+# 🛡️ SafeTrail - Smart Tourist Safety Monitoring & Incident Response System
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-safetrail--six.vercel.app-blue)](https://safetrail-six.vercel.app)
 [![Backend](https://img.shields.io/badge/Backend-Render-green)](https://safetrail-api-1pq5.onrender.com)
 [![GitHub](https://img.shields.io/badge/GitHub-SatyajitRedekar-black)](https://github.com/SatyajitRedekar/safetrail)
 
-> Smart Tourist Safety Monitoring & Incident Response System using AI, Geo-Fencing, and Blockchain-based Digital ID
-> Problem Statement ID: 25002 | Ministry of Development of North Eastern Region
+> **SafeTrail** is an AI-powered tourist safety monitoring and real-time tracking system. It combines GPS telemetry, machine learning anomaly detection, geo-fencing, and blockchain-based digital ID generation to safeguard tourists and enable rapid incident response.
+> 
+> **Problem Statement ID:** 25002 | **Ministry:** Ministry of Development of North Eastern Region
 
 ---
 
 ## 🌐 Live URLs
 | Service | URL |
 |---------|-----|
-| 🌐 Frontend | https://safetrail-six.vercel.app |
-| 🔧 Backend API | https://safetrail-api-1pq5.onrender.com |
-| 📁 GitHub | https://github.com/SatyajitRedekar/safetrail |
+| 🌐 **Frontend** | https://safetrail-six.vercel.app |
+| 🔧 **Backend API** | https://safetrail-api-1pq5.onrender.com |
+| 📁 **GitHub Repository** | https://github.com/SatyajitRedekar/safetrail |
 
 ---
 
 ## ✨ Features
-- 🪪 Blockchain-style Digital Tourist ID generation
-- 🚨 One-click SOS Panic Button with live GPS
-- 🚔 Police Command Center Dashboard
-- 📍 Live Map of Northeast India
-- 🌐 Multilingual Support (English, Hindi, Bengali, Assamese, Marathi)
-- 🔔 Real-time alerts using Socket.io
-- 🗺️ Geo-fence High Risk Zone warnings
-- 📊 Safety Score System
+- 🪪 **Blockchain-style Digital ID**: Generation of cryptographically hashed digital IDs for tourist profiles.
+- 🚨 **One-Click SOS Panic Alert**: Instantly triggers emergency alerts with real-time GPS tracking coordinates.
+- 🚔 **Police Command Center**: Web-based administration dashboard monitoring active tourists and geofences.
+- 🧠 **AI Anomaly Detection**: Real-time detection of speed spikes, prolonged inactivity, and route deviation.
+- 🗺️ **Geo-Fencing Protection**: Interactive warning zones for high-risk regions in Northeast India.
+- 🌐 **Multilingual Support**: Supports English, Hindi, Bengali, Assamese, and Marathi.
+- 🔔 **Real-Time Push Alerts**: Web socket notifications via Socket.io.
 
 ---
 
 ## 🛠️ Tech Stack
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React.js |
-| Backend | Node.js + Express.js |
-| Database | MongoDB Atlas |
-| Real-time | Socket.io |
-| Maps | OpenStreetMap |
-| Frontend Deploy | Vercel |
-| Backend Deploy | Render |
+- **Frontend:** React.js / OpenStreetMap
+- **Backend:** Node.js / Express.js
+- **AI Service:** Python / Flask / Scikit-learn
+- **Database:** MongoDB Atlas
+- **Real-Time Communications:** Socket.io
 
 ---
 
-## 🚀 How to Run This Project on Your Computer
-
-### What you need installed first:
-- [Node.js](https://nodejs.org) — Download and install LTS version
-- [Git](https://git-scm.com) — Download and install
-- [VS Code](https://code.visualstudio.com) — Code editor
-
----
-
-### Step 1 — Fork the Repository
-1. Go to https://github.com/SatyajitRedekar/safetrail
-2. Click the **Fork** button (top right)
-3. This creates your own copy of the project
-
----
-
-### Step 2 — Clone to your Computer
-Open terminal/command prompt and run:
-```bash
-git clone https://github.com/YOUR_USERNAME/safetrail.git
-cd safetrail
-```
-Replace `YOUR_USERNAME` with your GitHub username.
-
----
-
-### Step 3 — Setup the Backend (Server)
-```bash
-cd server
-npm install
-```
-
-Now create a file called `.env` inside the `server` folder with this content:
-```
-PORT=5000
-MONGO_URI=mongodb+srv://satyajit:safetrail123@cluster0.seztmft.mongodb.net/safetrail?appName=Cluster0
-JWT_SECRET=safetrail_secret_key
-```
-
-Then start the backend:
-```bash
-node index.js
-```
-
-You should see:
-```
-Server running on port 5000
-MongoDB connected
-```
-
----
-
-### Step 4 — Setup the Frontend (Client)
-Open a **new terminal** and run:
-```bash
-cd client
-npm install --legacy-peer-deps
-npm start
-```
-
-Browser will open at `http://localhost:3000` automatically.
-
----
-
-### Step 5 — You're done! 🎉
-| Page | URL |
-|------|-----|
-| Home | http://localhost:3000 |
-| Register | http://localhost:3000/register |
-| Panic Button | http://localhost:3000/panic |
-| Dashboard | http://localhost:3000/dashboard |
-
----
-
-## 🤝 How to Contribute
-
-### Step 1 — Create a new branch for your changes
-```bash
-git checkout -b your-feature-name
-```
-Example: `git checkout -b add-marathi-language`
-
-### Step 2 — Make your changes in VS Code
-Use AI (ChatGPT, Claude, Copilot) to help you write code!
-
-### Step 3 — Save and push your changes
-```bash
-git add .
-git commit -m "describe what you changed"
-git push origin your-feature-name
-```
-
-### Step 4 — Create a Pull Request
-1. Go to your forked repo on GitHub
-2. Click **"Compare & pull request"**
-3. Add a description of what you changed
-4. Click **"Create pull request"**
-
-Satyajit will review and merge it! ✅
-
----
-
-## 📁 Project Structure
+## 📁 Repository Structure
 ```
 safetrail/
 ├── client/                 # React Frontend
 │   └── src/
 │       ├── pages/
 │       │   ├── Home.js        # Landing page
-│       │   ├── Register.js    # Tourist registration
+│       │   ├── Register.js    # Tourist registration & Profile access
 │       │   ├── Panic.js       # SOS Emergency button
-│       │   └── Dashboard.js   # Police command center
+│       │   └── Visit.js       # Safety destinations page
 │       └── App.js
-├── server/                 # Node.js Backend
-│   ├── models/
-│   │   ├── Tourist.js         # Tourist data model
-│   │   └── Alert.js           # Alert data model
-│   ├── routes/
-│   │   ├── touristRoutes.js   # Registration API
-│   │   └── alertRoutes.js     # Panic alert API
-│   ├── controllers/
-│   │   ├── touristController.js
-│   │   └── alertController.js
-│   ├── config/
-│   │   └── db.js              # MongoDB connection
-│   └── index.js               # Main server file
+├── server/                 # Node.js Backend API
+│   ├── controllers/        # Route controllers (auth, alerts)
+│   ├── models/             # Mongoose schemas (Tourist, Alert)
+│   ├── routes/             # API Endpoint routes
+│   └── index.js            # Main server file
+├── ai-service/             # Python AI Microservice
+│   ├── app.py              # Flask API server
+│   ├── model.py            # Anomaly detector class
+│   ├── train.py            # Training script (88% accuracy)
+│   ├── evaluate.py         # Validation evaluation script
+│   └── requirements.txt    # Python requirements
+├── docs/                   # System documentation
+│   └── architecture.md     # Architecture documentation
+├── .env.example            # Environment variables example template
 └── README.md
 ```
 
 ---
 
-## 🔑 Credentials & Access
+## 📦 Installation & Setup
 
-### MongoDB Database
+### 1. Prerequisites
+Ensure you have the following installed:
+- [Node.js (LTS version)](https://nodejs.org)
+- [Python (3.8+)](https://python.org)
+- [Git](https://git-scm.com)
+
+---
+
+### 2. Node.js Backend Server
+Navigate to `/server` directory, install packages, configure environment, and run:
+```bash
+cd server
+npm install
+```
+Create a `.env` file inside the `server/` directory:
+```env
+PORT=5000
+MONGO_URI=mongodb+srv://satyajit:safetrail123@cluster0.seztmft.mongodb.net/safetrail?appName=Cluster0
+JWT_SECRET=safetrail_secret_key
+```
+Start the backend:
+```bash
+node index.js
+```
+
+---
+
+### 3. Node.js Frontend Client
+Open a new terminal window, navigate to `/client`, install dependencies, and run:
+```bash
+cd client
+npm install --legacy-peer-deps
+npm start
+```
+The browser will automatically load the frontend at `http://localhost:3000`.
+
+---
+
+### 4. Python AI Service
+Open a new terminal window, navigate to `/ai-service`, install packages, and start the service:
+```bash
+cd ai-service
+pip install -r requirements.txt
+python app.py
+```
+The Flask AI service will run at `http://localhost:5001`.
+
+* To train the Isolation Forest model:
+  ```bash
+  python train.py
+  ```
+* To validate/evaluate the model metrics:
+  ```bash
+  python evaluate.py
+  ```
+
+---
+
+## 🔑 Shared Databases & APIs
+
+### MongoDB Atlas Access
 ```
 Username: satyajit
 Password: safetrail123
@@ -187,26 +139,19 @@ Cluster: cluster0.seztmft.mongodb.net
 Database: safetrail
 ```
 
-### API Endpoints
+### Server API Endpoints
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | /api/tourists/register | Register a tourist |
-| GET | /api/tourists/all | Get all tourists |
-| POST | /api/alerts/panic | Trigger panic alert |
-| GET | /api/alerts/all | Get all alerts |
+| **POST** | `/api/tourists/register` | Register a tourist (generates Digital ID) |
+| **POST** | `/api/tourists/login` | Login tourist & retrieve digital ID profile |
+| **GET** | `/api/tourists/all` | Get all registered tourists |
+| **POST** | `/api/alerts/panic` | Trigger real-time panic alert |
+| **GET** | `/api/alerts/all` | Fetch all alerts |
 
 ---
 
-## 👨‍💻 Team
-**Lead Developer:** Satyajit Redekar
-- GitHub: [@SatyajitRedekar](https://github.com/SatyajitRedekar)
-- LinkedIn: [satyajit-redekar](https://linkedin.com/in/satyajit-redekar)
-
----
-
-## 📝 License
-This project is built for Smart India Hackathon 2025.
-Problem Statement ID: 25002
-Organization: Ministry of Development of North Eastern Region
-```
-
+## 👨‍💻 Team & License
+- **Lead Developer:** Satyajit Redekar
+  - GitHub: [@SatyajitRedekar](https://github.com/SatyajitRedekar)
+  - LinkedIn: [satyajit-redekar](https://linkedin.com/in/satyajit-redekar)
+- **License:** Project developed for the **Smart India Hackathon 2025** under the *Ministry of Development of North Eastern Region*.
