@@ -14,6 +14,24 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
 });
 
+const greenIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+const redIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
 function Dashboard() {
   const [alerts, setAlerts] = useState([]);
   const [tourists, setTourists] = useState([]);
@@ -379,12 +397,13 @@ function Dashboard() {
                 {tourists.map((t, idx) => {
                   const lat = t.location?.lat || t.location?.latitude;
                   const lng = t.location?.lng || t.location?.longitude;
+                  const isNormal = t.anomalyStatus === 'NORMAL';
                   return lat && lng ? (
-                    <Marker key={`tourist-${idx}`} position={[lat, lng]}>
+                    <Marker key={`tourist-${idx}`} position={[lat, lng]} icon={isNormal ? greenIcon : redIcon}>
                       <Popup>
                         <strong>{t.name}</strong><br/>
                         Digital ID: {t.digitalId}<br/>
-                        Status: Safe
+                        Status: {t.anomalyStatus || 'Safe'}
                       </Popup>
                     </Marker>
                   ) : null;
@@ -394,7 +413,7 @@ function Dashboard() {
                   const lat = a.location?.lat || a.location?.latitude;
                   const lng = a.location?.lng || a.location?.longitude;
                   return lat && lng ? (
-                    <Marker key={`alert-${idx}`} position={[lat, lng]}>
+                    <Marker key={`alert-${idx}`} position={[lat, lng]} icon={redIcon}>
                       <Popup>
                         <strong style={{ color: '#ef4444' }}>{a.name}</strong><br/>
                         Digital ID: {a.digitalId}<br/>
