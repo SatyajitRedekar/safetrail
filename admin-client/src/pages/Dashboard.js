@@ -462,56 +462,6 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* AI Anomaly Scanner Engine */}
-        <div style={{ ...panelStyle, marginBottom: '30px', border: '1px solid rgba(139, 92, 246, 0.3)', boxShadow: '0 0 30px rgba(139, 92, 246, 0.1)' }}>
-          <div style={{ ...panelHeaderStyle, backgroundColor: 'rgba(139, 92, 246, 0.1)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-              <span style={{ color: '#c4b5fd', fontWeight: '800' }}>AI BEHAVIORAL ANOMALY SCANNER</span>
-            </div>
-            <button 
-              onClick={runAnomalyScan}
-              disabled={isScanning}
-              style={{ ...actionBtnStyle, backgroundColor: '#8b5cf6', color: 'white', border: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}>
-              {isScanning ? 'SCANNING NODE NETWORK...' : 'RUN GLOBAL SCAN'}
-            </button>
-          </div>
-          <div style={{ padding: '24px', display: 'flex', gap: '20px' }}>
-            <div style={{ flex: 1 }}>
-              <h4 style={{ margin: '0 0 15px 0', color: '#cbd5e1', fontSize: '13px' }}>FLAGGED INDIVIDUALS</h4>
-              {anomalies.length === 0 ? (
-                <div style={{ padding: '20px', backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '8px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>
-                  {isScanning ? 'ANALYZING...' : 'NO ANOMALIES DETECTED IN LAST SCAN'}
-                </div>
-              ) : (
-                <div style={{ display: 'grid', gap: '10px' }}>
-                  {anomalies.map((a, i) => (
-                    <div key={i} style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '12px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div>
-                        <div style={{ color: 'white', fontWeight: 'bold' }}>{a.name} <span style={{ color: '#94a3b8', fontSize: '12px', marginLeft: '10px' }}>{a.digitalId}</span></div>
-                        <div style={{ color: '#fca5a5', fontSize: '11px', marginTop: '4px', fontWeight: '600' }}>CRITICAL: {a.anomalyStatus}</div>
-                      </div>
-                      <button style={{ ...actionBtnStyle, backgroundColor: '#ef4444', color: 'white' }}>DISPATCH UNIT</button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            
-            <div style={{ width: '350px', backgroundColor: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '16px', border: '1px dashed #475569' }}>
-              <h4 style={{ margin: '0 0 10px 0', color: '#94a3b8', fontSize: '11px', letterSpacing: '1px' }}>DEV TOOLS: SIMULATION</h4>
-              <p style={{ margin: '0 0 15px 0', fontSize: '11px', color: '#cbd5e1', lineHeight: '1.4' }}>
-                Simulate a sudden GPS drop-off or prolonged inactivity to test the AI engine.
-              </p>
-              {tourists.slice(0,3).map((t, i) => (
-                 <button key={i} onClick={() => simulateDropOff(t.digitalId)} style={{ display: 'block', width: '100%', marginBottom: '8px', padding: '8px', backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: '#38bdf8', fontSize: '11px', borderRadius: '4px', cursor: 'pointer', textAlign: 'left' }}>
-                   BREAK SIGNAL: {t.name}
-                 </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* Verify Digital ID Search Bar */}
         <div style={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '40px', marginBottom: '30px', textAlign: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
           <h2 style={{ color: '#38bdf8', fontSize: '28px', fontFamily: '"Outfit", sans-serif', letterSpacing: '1px', margin: '0 0 10px 0', textTransform: 'uppercase' }}>VERIFY DIGITAL ID</h2>
