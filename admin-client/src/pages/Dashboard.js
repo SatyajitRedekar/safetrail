@@ -80,7 +80,13 @@ function Dashboard() {
       Math.abs(t.location.latitude - lat) < 3 && 
       Math.abs(t.location.longitude - lon) < 3
     ).length;
-    return Math.min(Math.round((count / maxCapacity) * 100) + 20, 100); 
+    
+    const baseDensity = Math.min(Math.round((count / maxCapacity) * 100), 100);
+    const timeSeed = Math.floor(new Date().getTime() / 5000); // changes every 5 seconds
+    const fluctuation = Math.round(Math.sin(lat + lon + timeSeed) * 12);
+    const mockBase = Math.abs(Math.round(Math.sin(lat * 31 + lon * 17) * 45)) + 30; // mock value between 30 and 75
+    
+    return Math.max(15, Math.min(95, (baseDensity || mockBase) + fluctuation));
   };
 
   const runAnomalyScan = async () => {
@@ -186,7 +192,15 @@ function Dashboard() {
       if (!lat || !lng) return false;
       return lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng;
     }).length;
-    return Math.min(Math.round((count / maxCapacity) * 100) + 15, 100); 
+    
+    const baseDensity = Math.min(Math.round((count / maxCapacity) * 100), 100);
+    const timeSeed = Math.floor(new Date().getTime() / 5000);
+    const midLat = (minLat + maxLat) / 2;
+    const midLng = (minLng + maxLng) / 2;
+    const fluctuation = Math.round(Math.sin(midLat + midLng + timeSeed) * 10);
+    const mockBase = Math.abs(Math.round(Math.sin(midLat * 43 + midLng * 19) * 35)) + 25; // mock value between 25 and 60
+    
+    return Math.max(10, Math.min(90, (baseDensity || mockBase) + fluctuation));
   };
 
   const generateEFIRPdf = () => {
