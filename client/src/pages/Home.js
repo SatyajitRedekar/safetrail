@@ -122,7 +122,7 @@ function Home() {
     setLoadingNews(false);
   };
 
-  const analyzeSafety = (lat, lon, weather) => {
+  const analyzeSafety = (lat, lon, weather, forceSimulate = false) => {
     let score = 100;
     
     const hour = new Date().getHours();
@@ -135,12 +135,23 @@ function Home() {
     }
 
     let breachedZone = null;
-    for (let zone of RESTRICTED_ZONES) {
-      const dist = getDistance(lat, lon, zone.lat, zone.lon);
-      if (dist <= zone.radiusKm) {
-        breachedZone = zone;
-        score -= 50;
-        break;
+    if (forceSimulate) {
+      const cityName = (userLoc.name && userLoc.name !== 'Locating you...') ? userLoc.name.split(',')[0].trim() : "Local";
+      breachedZone = {
+        name: `${cityName} (Tribal Reserve / Forest Core Area)`,
+        lat: lat,
+        lon: lon,
+        radiusKm: 10
+      };
+      score -= 50;
+    } else {
+      for (let zone of RESTRICTED_ZONES) {
+        const dist = getDistance(lat, lon, zone.lat, zone.lon);
+        if (dist <= zone.radiusKm) {
+          breachedZone = zone;
+          score -= 50;
+          break;
+        }
       }
     }
     
@@ -152,12 +163,14 @@ function Home() {
     if (simulatedZone) {
       setSimulatedZone(false);
       if (weatherData && userLoc.lat) {
-         analyzeSafety(userLoc.lat, userLoc.lon, weatherData);
+         analyzeSafety(userLoc.lat, userLoc.lon, weatherData, false);
       }
     } else {
       setSimulatedZone(true);
       if (weatherData) {
-         analyzeSafety(11.5504, 92.2335, weatherData); // Simulating Sentinel Island
+         const lat = userLoc.lat || 11.5504;
+         const lon = userLoc.lon || 92.2335;
+         analyzeSafety(lat, lon, weatherData, true);
       }
     }
   };
