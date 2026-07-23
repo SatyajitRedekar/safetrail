@@ -39,7 +39,7 @@ function AdminLogin() {
         <div style={{ position: 'absolute', bottom: '15%', left: '10%', color: 'white', maxWidth: '80%' }}>
           <h1 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '56px', fontWeight: '800', margin: '0 0 15px 0', textShadow: '0 4px 15px rgba(0,0,0,0.4)', lineHeight: 1.1 }}>Command.<br/>Control.</h1>
           <p style={{ fontSize: '18px', opacity: 0.9, lineHeight: 1.6, textShadow: '0 2px 8px rgba(0,0,0,0.5)', maxWidth: '400px' }}>
-            Authorized access only. Enter your credentials to access the SafeTrail Police Dashboard.
+            Authorized access only. Enter your credentials to access the SafeTravel Police Dashboard.
           </p>
         </div>
       </div>

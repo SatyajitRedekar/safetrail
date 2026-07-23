@@ -17,7 +17,7 @@ model = IsolationForest(contamination=0.1, random_state=42)
 model.fit(data)
 
 # Save model
-with open('safetrail_model.pkl', 'wb') as f:
+with open('safetravel_model.pkl', 'wb') as f:
     pickle.dump(model, f)
 
 print("✅ Model trained and saved!")

@@ -5,7 +5,7 @@ import { API_URL } from '../config';
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { text: "Hi! I'm your SafeTrail AI Guide. How can I help you stay safe today?", isBot: true }
+    { text: "Hi! I'm your SafeTravel AI Guide. How can I help you stay safe today?", isBot: true }
   ]);
   const [input, setInput] = useState('');
 

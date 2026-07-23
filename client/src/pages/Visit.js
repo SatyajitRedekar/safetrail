@@ -25,7 +25,7 @@ function Visit() {
   const [places, setPlaces] = useState([]);
 
   useEffect(() => {
-    const cached = sessionStorage.getItem('safetrail_location');
+    const cached = sessionStorage.getItem('safetravel_location');
     if (cached) {
       const loc = JSON.parse(cached);
       setUserLoc(loc);
@@ -37,7 +37,7 @@ function Visit() {
         (position) => {
           const loc = { lat: position.coords.latitude, lon: position.coords.longitude };
           setUserLoc(loc);
-          sessionStorage.setItem('safetrail_location', JSON.stringify(loc));
+          sessionStorage.setItem('safetravel_location', JSON.stringify(loc));
         },
         (error) => console.error("Error getting location: ", error)
       );

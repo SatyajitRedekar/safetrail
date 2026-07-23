@@ -22,7 +22,7 @@ function Navbar() {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <span style={{ fontSize: '28px', filter: 'drop-shadow(0 0 10px rgba(56, 189, 248, 0.5))' }}>🛡️</span>
-        <h2 style={{ margin: 0, fontSize: '24px', fontWeight: '800', letterSpacing: '2px' }}>SAFETRAIL</h2>
+        <h2 style={{ margin: 0, fontSize: '24px', fontWeight: '800', letterSpacing: '2px' }}>SAFETRAVEL</h2>
       </div>
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
         <Link to="/" style={linkStyle}>Home</Link>

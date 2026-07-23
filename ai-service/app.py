@@ -12,7 +12,7 @@ db_config = {
     "host": "localhost",
     "user": "root", 
     "password": "your_password",
-    "database": "safetrail_db"
+    "database": "safetravel_db"
 }
 
 # Train model on normal movement data

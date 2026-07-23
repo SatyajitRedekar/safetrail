@@ -82,7 +82,7 @@ function Register() {
 
           <div style={{ marginBottom: '35px', backgroundColor: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.3)', padding: '25px', borderRadius: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-              <div style={{ fontFamily: '"Outfit", sans-serif', fontWeight: '700', fontSize: '18px', letterSpacing: '1px', color: '#38bdf8' }}>OFFICIAL SAFETRAIL ID</div>
+              <div style={{ fontFamily: '"Outfit", sans-serif', fontWeight: '700', fontSize: '18px', letterSpacing: '1px', color: '#38bdf8' }}>OFFICIAL SAFETRAVEL ID</div>
               <div style={{ fontSize: '24px' }}>🇮🇳</div>
             </div>
             <div style={{ fontSize: '36px', fontWeight: '800', letterSpacing: '4px', marginBottom: '15px', fontFamily: 'monospace', textShadow: '0 0 10px rgba(56, 189, 248, 0.5)' }}>

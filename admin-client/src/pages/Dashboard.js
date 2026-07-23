@@ -237,7 +237,7 @@ function Dashboard() {
     doc.setFont('helvetica', 'normal');
     doc.text(`Type of Emergency: SOS PANIC ALERT`, 20, 100);
     doc.text(`GPS Coordinates: Lat ${lat}, Lng ${lng}`, 20, 110);
-    doc.text(`Description: Emergency SOS trigger received via SafeTrail`, 20, 120);
+    doc.text(`Description: Emergency SOS trigger received via SafeTravel`, 20, 120);
     doc.text(`mobile client indicating immediate severe distress.`, 20, 127);
     
     doc.setFont('helvetica', 'bold');
@@ -251,10 +251,10 @@ function Dashboard() {
     
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    doc.text('This is a digitally generated document by the SafeTrail Tourist Safety System.', 105, 270, { align: 'center' });
+    doc.text('This is a digitally generated document by the SafeTravel Tourist Safety System.', 105, 270, { align: 'center' });
     doc.text('Valid only for official police jurisdiction use.', 105, 275, { align: 'center' });
     
-    doc.save(`SafeTrail_EFIR_${touristName.replace(/\s+/g, '_')}.pdf`);
+    doc.save(`SafeTravel_EFIR_${touristName.replace(/\s+/g, '_')}.pdf`);
   };
 
   return (
@@ -285,7 +285,7 @@ function Dashboard() {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           </div>
           <div>
-            <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '700', letterSpacing: '0.5px', color: 'white' }}>SAFETRAIL_NEXUS</h2>
+            <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '700', letterSpacing: '0.5px', color: 'white' }}>SAFETRAVEL_NEXUS</h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
               <span style={{ width: '6px', height: '6px', backgroundColor: '#10b981', borderRadius: '50%', boxShadow: '0 0 8px #10b981', animation: 'pulse 2s infinite' }}></span>
               <p style={{ margin: 0, color: '#94a3b8', fontSize: '12px', fontWeight: '500', letterSpacing: '1px' }}>SYSTEM OPERATIONAL • ENCRYPTED CONNECTION</p>
@@ -482,7 +482,7 @@ function Dashboard() {
         {/* Verify Digital ID Search Bar */}
         <div style={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '40px', marginBottom: '30px', textAlign: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
           <h2 style={{ color: '#38bdf8', fontSize: '28px', fontFamily: '"Outfit", sans-serif', letterSpacing: '1px', margin: '0 0 10px 0', textTransform: 'uppercase' }}>VERIFY DIGITAL ID</h2>
-          <p style={{ color: '#94a3b8', fontSize: '15px', margin: '0 0 30px 0' }}>Enter an Official SafeTrail ID to view the traveler's digital profile.</p>
+          <p style={{ color: '#94a3b8', fontSize: '15px', margin: '0 0 30px 0' }}>Enter an Official SafeTravel ID to view the traveler's digital profile.</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', maxWidth: '600px', margin: '0 auto' }}>
             <input 
               type="text" 
@@ -682,7 +682,7 @@ function Dashboard() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
                   <div style={{ fontSize: '10px', color: '#94a3b8', letterSpacing: '1.5px', fontWeight: '600' }}>GOVERNMENT OF INDIA</div>
-                  <div style={{ fontSize: '22px', color: 'white', fontWeight: '800', fontFamily: '"Outfit", sans-serif', letterSpacing: '1px', marginTop: '2px' }}>SAFETRAIL PASS</div>
+                  <div style={{ fontSize: '22px', color: 'white', fontWeight: '800', fontFamily: '"Outfit", sans-serif', letterSpacing: '1px', marginTop: '2px' }}>SAFETRAVEL PASS</div>
                 </div>
                 <div style={{ fontSize: '24px', fontWeight: '800', color: 'rgba(255,255,255,0.1)', fontFamily: '"Outfit", sans-serif' }}>IN</div>
               </div>

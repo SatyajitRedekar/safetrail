@@ -4,13 +4,12 @@ import { useLanguage } from '../LanguageContext';
 import { API_URL } from '../config';
 
 const translations = {
-  English: { title: "SafeTrail", subtitle: "Smart Tourist Safety System", desc: "Your digital guardian anywhere you travel.", btnReg: "Register Now", btnDash: "Command Center", btnSos: "Emergency SOS" },
-  Hindi: { title: "सेफट्रेल", subtitle: "स्मार्ट पर्यटक सुरक्षा प्रणाली", desc: "आपकी यात्राओं में आपका डिजिटल रक्षक।", btnReg: "पंजीकरण करें", btnDash: "कमांड सेंटर", btnSos: "आपातकालीन SOS" },
-  Marathi: { title: "सेफट्रेल", subtitle: "स्मार्ट पर्यटक सुरक्षा प्रणाली", desc: "तुमच्या प्रवासात तुमचा डिजिटल रक्षक.", btnReg: "नोंदणी करा", btnDash: "कमांड सेंटर", btnSos: "आणीबाणी SOS" },
-  Bengali: { title: "সেফট্রেইল", subtitle: "স্মার্ট ট্যুরিস্ট সেফটি সিস্টেম", desc: "আপনার ভ্রমণে আপনার ডিজিটাল অভিভাবক।", btnReg: "নিবন্ধন করুন", btnDash: "কমান্ড সেন্টার", btnSos: "ইমার্জেন্সি SOS" },
-  Assamese: { title: "ছেফট্রেইল", subtitle: "স্মাৰ্ট পৰ্যটক সুৰক্ষা প্ৰণালী", desc: "আপোনাৰ ভ্ৰমণত আপোনাৰ ডিজিটেল অভিভাৱক।", btnReg: "পঞ্জীয়ন কৰক", btnDash: "কমাণ্ড চেণ্টাৰ", btnSos: "জৰুৰীকালীন SOS" }
+  English: { title: "SafeTravel", subtitle: "Smart Tourist Safety System", desc: "Your digital guardian anywhere you travel.", btnReg: "Register Now", btnDash: "Command Center", btnSos: "Emergency SOS" },
+  Hindi: { title: "सेफट्रैवल", subtitle: "स्मार्ट पर्यटक सुरक्षा प्रणाली", desc: "आपकी यात्राओं में आपका डिजिटल रक्षक।", btnReg: "पंजीकरण करें", btnDash: "कमांड सेंटर", btnSos: "आपातकालीन SOS" },
+  Marathi: { title: "सेफट्रॅव्हल", subtitle: "स्मार्ट पर्यटक सुरक्षा प्रणाली", desc: "तुमच्या प्रवासात तुमचा डिजिटल रक्षक.", btnReg: "नोंदणी करा", btnDash: "कमांड सेंटर", btnSos: "आणीबाणी SOS" },
+  Bengali: { title: "সেফট্রাভেল", subtitle: "স্মার্ট ট্যুরিস্ট সেফটি সিস্টেম", desc: "আপনার ভ্রমণে আপনার ডিজিটাল অভিভাবক।", btnReg: "নিবন্ধন করুন", btnDash: "কমান্ড সেন্টার", btnSos: "ইমার্জেন্সি SOS" },
+  Assamese: { title: "ছেফট্ৰাভেল", subtitle: "স্মাৰ্ট পৰ্যটক সুৰক্ষা প্ৰণালী", desc: "আপোনাৰ ভ্ৰমণত আপোনাৰ ডিজিটেল অভিভাৱক।", btnReg: "পঞ্জীয়ন কৰক", btnDash: "কমাণ্ড চেণ্টাৰ", btnSos: "জৰুৰীকালীন SOS" }
 };
-
 const RESTRICTED_ZONES = [
   { name: "Sentinel Island (Tribal Reserve)", lat: 11.5504, lon: 92.2335, radiusKm: 10 },
   { name: "LoC Buffer Zone (Kashmir)", lat: 34.0837, lon: 74.7973, radiusKm: 15 },
@@ -61,7 +60,7 @@ function Home() {
 
   const fetchNearbyPlaces = async (lat, lon) => {
     try {
-      const cached = sessionStorage.getItem('safetrail_places');
+      const cached = sessionStorage.getItem('safetravel_places');
       if (cached) {
         setNearbyPlaces(JSON.parse(cached));
         setLoadingPlaces(false);
@@ -86,7 +85,7 @@ function Home() {
         };
       });
       setNearbyPlaces(enrichedPlaces);
-      sessionStorage.setItem('safetrail_places', JSON.stringify(enrichedPlaces));
+      sessionStorage.setItem('safetravel_places', JSON.stringify(enrichedPlaces));
     } catch (err) {
       console.error("Failed to fetch nearby places", err);
     }
@@ -95,7 +94,7 @@ function Home() {
 
   const fetchNews = async (locationStr = 'India') => {
     try {
-      const cached = sessionStorage.getItem('safetrail_news');
+      const cached = sessionStorage.getItem('safetravel_news');
       if (cached) {
         setNewsList(JSON.parse(cached));
         setLoadingNews(false);
@@ -130,7 +129,7 @@ function Home() {
       }
       const finalNews = articles.slice(0, 6);
       setNewsList(finalNews);
-      sessionStorage.setItem('safetrail_news', JSON.stringify(finalNews));
+      sessionStorage.setItem('safetravel_news', JSON.stringify(finalNews));
     } catch (err) {
       console.error("Failed to fetch news", err);
     }
@@ -228,8 +227,8 @@ function Home() {
   }, [customZones]);
 
   useEffect(() => {
-    const cachedLoc = sessionStorage.getItem('safetrail_userLoc');
-    const cachedWeather = sessionStorage.getItem('safetrail_weather');
+    const cachedLoc = sessionStorage.getItem('safetravel_userLoc');
+    const cachedWeather = sessionStorage.getItem('safetravel_weather');
     
     if (cachedLoc && cachedWeather) {
       const loc = JSON.parse(cachedLoc);
@@ -267,9 +266,9 @@ function Home() {
             const locObj = { name: locName, lat, lon, hazardTitle, hazardLevel };
             setUserLoc(locObj);
             setWeatherData(weather);
-            sessionStorage.setItem('safetrail_userLoc', JSON.stringify(locObj));
-            sessionStorage.setItem('safetrail_location', JSON.stringify({ lat, lon }));
-            sessionStorage.setItem('safetrail_weather', JSON.stringify(weather));
+            sessionStorage.setItem('safetravel_userLoc', JSON.stringify(locObj));
+            sessionStorage.setItem('safetravel_location', JSON.stringify({ lat, lon }));
+            sessionStorage.setItem('safetravel_weather', JSON.stringify(weather));
             setLoadingWeather(false);
             if (!simulatedZone) {
               analyzeSafety(lat, lon, weather);
@@ -295,9 +294,9 @@ function Home() {
   }, []);
 
   const getWeatherIcon = (code) => {
-    if (code === undefined) return '🌤️';
-    if (code === 0) return '☀️'; if (code >= 1 && code <= 3) return '⛅';
-    if (code >= 51 && code <= 67) return '🌧️'; if (code >= 71 && code <= 77) return '❄️';
+    if (code === undefined) return '⛅';
+    if (code === 0) return 'â˜€ï¸'; if (code >= 1 && code <= 3) return 'â›…';
+    if (code >= 51 && code <= 67) return '🌧️'; if (code >= 71 && code <= 77) return 'â„ï¸';
     if (code >= 95) return '⛈️'; return '🌫️';
   };
   
@@ -326,10 +325,10 @@ function Home() {
             </button>
             <button onClick={() => {
               if (!userLoc.lat) { alert("Acquiring GPS..."); return; }
-              navigator.clipboard.writeText(`https://safetrail.in/track?lat=${userLoc.lat}&lon=${userLoc.lon}&session=ST-${Math.floor(Math.random()*90000) + 10000}`);
+              navigator.clipboard.writeText(`https://safetravel.in/track?lat=${userLoc.lat}&lon=${userLoc.lon}&session=ST-${Math.floor(Math.random()*90000) + 10000}`);
               alert("🔗 Secure Tracking Link Copied!");
             }} style={{...heroBtnStyle, background: 'linear-gradient(135deg, #8b5cf6, #5b21b6)', border: 'none', boxShadow: '0 8px 20px rgba(139, 92, 246, 0.3)'}}>
-              <span style={{ fontSize: '24px' }}>📡</span> Share Location
+              <span style={{ fontSize: '24px' }}>📝¡</span> Share Location
             </button>
             <button onClick={() => navigate('/panic')} style={{...heroBtnStyle, background: 'linear-gradient(135deg, #ef4444, #991b1b)', border: 'none', boxShadow: '0 10px 30px rgba(239, 68, 68, 0.4)'}}>
               <span style={{ fontSize: '24px' }}>🚨</span> {t.btnSos}
@@ -379,7 +378,7 @@ function Home() {
         {/* Live Weather & Alerts */}
         <section style={{ marginBottom: '80px' }}>
           <h2 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '32px', marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '15px' }}>
-            📍 Live Safety Intel
+            🛡️ Live Safety Intel
             {geoError && <span style={{ fontSize: '14px', color: '#fca5a5', backgroundColor: 'rgba(239, 68, 68, 0.2)', padding: '5px 10px', borderRadius: '8px' }}>{geoError}</span>}
           </h2>
 
@@ -544,10 +543,10 @@ function Home() {
 
         {/* Local News & Updates */}
         <section style={{ marginBottom: '80px' }}>
-          <h2 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '32px', marginBottom: '30px' }}>📰 Local News & Updates</h2>
+          <h2 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '32px', marginBottom: '30px' }}>📝° Local News & Updates</h2>
           {loadingNews ? (
             <div style={{ textAlign: 'center', padding: '60px', opacity: 0.7 }}>
-              <div style={{ fontSize: '48px', animation: 'pulse 1s infinite' }}>📰</div>
+              <div style={{ fontSize: '48px', animation: 'pulse 1s infinite' }}>📝°</div>
               <p style={{ fontSize: '18px', marginTop: '15px' }}>Fetching latest headlines...</p>
             </div>
           ) : newsList.length > 0 ? (

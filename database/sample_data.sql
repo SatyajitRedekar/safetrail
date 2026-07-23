@@ -1,15 +1,15 @@
 -- Sample Data for Testing
-USE safetrail_db;
+USE safetravel_db;
 
-INSERT INTO tourists VALUES 
+INSERT INTO tourists (id, digital_id, name, email, password, phone, passport, emergency_contact, risk_zone, blockchain_hash, ledger_status, anomaly_status, last_ping, latitude, longitude, created_at) VALUES 
 (1,'ST-10001','Satyajit Redekar','satyajit@gmail.com',
-'9876543210','MH1234','9876543211','Northeast India',
+'$2a$10$Eux/8Gub0hXy8cIuQc/jVeXnOq0p4e4/e7b0j7x7r2e3i6k5a4m2e','9876543210','MH1234','9876543211','Northeast India',
 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2',
-'2024-01-15 10:00:00'),
+'VERIFIED','NORMAL','2026-07-23 10:00:00',27.1752,78.0422,'2026-07-23 10:00:00'),
 (2,'ST-10002','Rahul Sharma','rahul@gmail.com',
-'9123456780','DL5678','9123456781','Kashmir',
+'$2a$10$Eux/8Gub0hXy8cIuQc/jVeXnOq0p4e4/e7b0j7x7r2e3i6k5a4m2e','9123456780','DL5678','9123456781','Kashmir',
 'b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3',
-'2024-01-16 11:00:00');
+'VERIFIED','NORMAL','2026-07-23 11:00:00',34.0837,74.7973,'2026-07-23 11:00:00');
 
 INSERT INTO location_history 
 (digital_id, latitude, longitude, speed) VALUES

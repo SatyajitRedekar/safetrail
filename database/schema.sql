@@ -1,8 +1,8 @@
--- SafeTrail Database Schema
+-- SafeTravel Database Schema
 -- AI-Based Smart Safety and Tracking System
 
-CREATE DATABASE IF NOT EXISTS safetrail_db;
-USE safetrail_db;
+CREATE DATABASE IF NOT EXISTS safetravel_db;
+USE safetravel_db;
 
 -- Users Table
 CREATE TABLE IF NOT EXISTS tourists (
@@ -10,11 +10,17 @@ CREATE TABLE IF NOT EXISTS tourists (
     digital_id VARCHAR(20) UNIQUE NOT NULL,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     phone VARCHAR(15) NOT NULL,
     passport VARCHAR(50) NOT NULL,
     emergency_contact VARCHAR(15) NOT NULL,
     risk_zone VARCHAR(100),
     blockchain_hash VARCHAR(64),
+    ledger_status VARCHAR(20) DEFAULT 'VERIFIED',
+    anomaly_status VARCHAR(20) DEFAULT 'NORMAL',
+    last_ping DATETIME DEFAULT CURRENT_TIMESTAMP,
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -72,4 +78,21 @@ CREATE TABLE IF NOT EXISTS system_logs (
     action VARCHAR(100),
     details TEXT,
     logged_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Zones Table
+CREATE TABLE IF NOT EXISTS zones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    density DOUBLE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Zone Coordinates Table
+CREATE TABLE IF NOT EXISTS zone_coordinates (
+    zone_id INT NOT NULL,
+    lat DECIMAL(10, 8) NOT NULL,
+    lng DECIMAL(11, 8) NOT NULL,
+    FOREIGN KEY (zone_id) REFERENCES zones(id) ON DELETE CASCADE
 );

@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
 import { API_URL } from '../config';
 
-const socket = io(API_URL); // Connect to backend
+const socketUrl = API_URL.replace('http', 'ws') + '/ws/broadcast';
 
 function BroadcastBanner() {
   const [broadcast, setBroadcast] = useState(null);
 
   useEffect(() => {
-    socket.on('emergency_broadcast', (data) => {
-      setBroadcast(data);
-    });
+    const ws = new WebSocket(socketUrl);
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.event === 'emergency_broadcast') {
+          setBroadcast(data);
+        }
+      } catch (err) {
+        console.error('WebSocket parsing error:', err);
+      }
+    };
 
     return () => {
-      socket.off('emergency_broadcast');
+      ws.close();
     };
   }, []);
 

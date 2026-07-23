@@ -1,21 +1,20 @@
-# 🛡️ SafeTrail - Smart Tourist Safety Monitoring & Incident Response System
+# 🛡️ SafeTravel - Smart Tourist Safety Monitoring & Incident Response System
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-safetrail--six.vercel.app-blue)](https://safetrail-six.vercel.app)
-[![Backend](https://img.shields.io/badge/Backend-Render-green)](https://safetrail-api-1pq5.onrender.com)
-[![GitHub](https://img.shields.io/badge/GitHub-SatyajitRedekar-black)](https://github.com/SatyajitRedekar/safetrail)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-safetravel--six.vercel.app-blue)](https://safetravel-six.vercel.app)
+[![GitHub](https://img.shields.io/badge/GitHub-SatyajitRedekar-black)](https://github.com/SatyajitRedekar/safetravel)
 
-> **SafeTrail** is an AI-powered tourist safety monitoring and real-time tracking system. It combines GPS telemetry, machine learning anomaly detection, geo-fencing, and blockchain-based digital ID generation to safeguard tourists and enable rapid incident response.
-> 
-> **Problem Statement ID:** 25002 | **Ministry:** Ministry of Development of North Eastern Region
+> **SafeTravel** is a tourist safety monitoring system built for the **Smart India Hackathon 2025** (Problem ID 25002, Ministry of Development of North Eastern Region).
+> - **REST APIs**: Developed using Spring Boot for tourist registration, digital ID generation, and SOS alert handling.
+> - **Relational MySQL Database**: Designed relational schema for tourist and alert data using Spring Data JPA.
+> - **Secure Authentication**: Implemented secure authentication using Spring Security and JWT.
 
 ---
 
 ## 🌐 Live URLs
 | Service | URL |
 |---------|-----|
-| 🌐 **Frontend** | https://safetrail-six.vercel.app |
-| 🔧 **Backend API** | https://safetrail-api-1pq5.onrender.com |
-| 📁 **GitHub Repository** | https://github.com/SatyajitRedekar/safetrail |
+| 🌐 **Frontend** | https://safetravel-six.vercel.app |
+| 📁 **GitHub Repository** | https://github.com/SatyajitRedekar/safetravel |
 
 ---
 
@@ -26,22 +25,22 @@
 - 🧠 **AI Anomaly Detection**: Real-time detection of speed spikes, prolonged inactivity, and route deviation.
 - 🗺️ **Geo-Fencing Protection**: Interactive warning zones for high-risk regions in Northeast India.
 - 🌐 **Multilingual Support**: Supports English, Hindi, Bengali, Assamese, and Marathi.
-- 🔔 **Real-Time Push Alerts**: Web socket notifications via Socket.io.
+- 🔔 **Real-Time Push Alerts**: Web socket notifications via standard WebSockets (`/ws/broadcast`).
 
 ---
 
 ## 🛠️ Tech Stack
 - **Frontend:** React.js / OpenStreetMap
-- **Backend:** Node.js / Express.js
+- **Backend:** Spring Boot / Spring Security / JWT / Hibernate/JPA
 - **AI Service:** Python / Flask / Scikit-learn
-- **Database:** MongoDB Atlas
-- **Real-Time Communications:** Socket.io
+- **Database:** MySQL
+- **Real-Time Communications:** WebSockets
 
 ---
 
 ## 📁 Repository Structure
 ```
-safetrail/
+safetravel/
 ├── client/                 # React Frontend
 │   └── src/
 │       ├── pages/
@@ -50,11 +49,18 @@ safetrail/
 │       │   ├── Panic.js       # SOS Emergency button
 │       │   └── Visit.js       # Safety destinations page
 │       └── App.js
-├── server/                 # Node.js Backend API
-│   ├── controllers/        # Route controllers (auth, alerts)
-│   ├── models/             # Mongoose schemas (Tourist, Alert)
-│   ├── routes/             # API Endpoint routes
-│   └── index.js            # Main server file
+├── server/                 # Spring Boot Backend API
+│   ├── pom.xml             # Maven dependencies configuration
+│   └── src/main/
+│       ├── java/com/safetravel/
+│       │   ├── config/        # Security, JWT, CORS, WebSockets
+│       │   ├── controller/    # Rest Controllers (tourists, alerts, zones)
+│       │   ├── model/         # JPA Entities (Tourist, Alert, Zone)
+│       │   ├── repository/    # JPA Repositories
+│       │   ├── service/       # Services & WebSocket Handlers
+│       │   └── dto/           # Data Transfer Objects
+│       └── resources/
+│           └── application.properties
 ├── ai-service/             # Python AI Microservice
 │   ├── app.py              # Flask API server
 │   ├── model.py            # Anomaly detector class
@@ -67,7 +73,6 @@ safetrail/
 │   └── queries.sql         # Common queries
 ├── docs/                   # System documentation
 │   └── architecture.md     # Architecture documentation
-├── .env.example            # Environment variables example template
 └── README.md
 ```
 
@@ -77,32 +82,39 @@ safetrail/
 
 ### 1. Prerequisites
 Ensure you have the following installed:
+- [Java Development Kit (JDK 17+)](https://adoptium.net)
+- [Apache Maven](https://maven.apache.org)
 - [Node.js (LTS version)](https://nodejs.org)
 - [Python (3.8+)](https://python.org)
+- [MySQL Server](https://mysql.com)
 - [Git](https://git-scm.com)
 
 ---
 
-### 2. Node.js Backend Server
-Navigate to `/server` directory, install packages, configure environment, and run:
+### 2. MySQL Database Setup
+Log in to your local MySQL database, then run the schema and sample data:
 ```bash
-cd server
-npm install
-```
-Create a `.env` file inside the `server/` directory:
-```env
-PORT=5000
-MONGO_URI=mongodb+srv://satyajit:safetrail123@cluster0.seztmft.mongodb.net/safetrail?appName=Cluster0
-JWT_SECRET=safetrail_secret_key
-```
-Start the backend:
-```bash
-node index.js
+mysql -u root -p < database/schema.sql
+mysql -u root -p < database/sample_data.sql
 ```
 
 ---
 
-### 3. Node.js Frontend Client
+### 3. Spring Boot Backend Server
+Navigate to `/server` directory and build the project:
+```bash
+cd server
+mvn clean install
+```
+Start the Spring Boot backend server:
+```bash
+mvn spring-boot:run
+```
+The backend server will run on `http://localhost:5000`.
+
+---
+
+### 4. React Frontend Client
 Open a new terminal window, navigate to `/client`, install dependencies, and run:
 ```bash
 cd client
@@ -113,7 +125,7 @@ The browser will automatically load the frontend at `http://localhost:3000`.
 
 ---
 
-### 4. Python AI Service
+### 5. Python AI Service
 Open a new terminal window, navigate to `/ai-service`, install packages, and start the service:
 ```bash
 cd ai-service
@@ -133,14 +145,14 @@ The Flask AI service will run at `http://localhost:5001`.
 
 ---
 
-## 🔑 Shared Databases & APIs
+## 🔑 Database Credentials & APIs
 
-### MongoDB Atlas Access
+### MySQL Local Config
 ```
-Username: satyajit
-Password: safetrail123
-Cluster: cluster0.seztmft.mongodb.net
-Database: safetrail
+URL: jdbc:mysql://localhost:3306/safetravel_db
+Username: root
+Password: 
+Database: safetravel_db
 ```
 
 ### Server API Endpoints
@@ -148,9 +160,14 @@ Database: safetrail
 |--------|----------|-------------|
 | **POST** | `/api/tourists/register` | Register a tourist (generates Digital ID) |
 | **POST** | `/api/tourists/login` | Login tourist & retrieve digital ID profile |
-| **GET** | `/api/tourists/all` | Get all registered tourists |
+| **GET** | `/api/tourists` | Get all registered tourists |
+| **GET** | `/api/tourists/{digitalId}` | Get tourist by digital ID |
+| **PUT** | `/api/tourists/{digitalId}/ping` | Update ping and reset anomalies |
 | **POST** | `/api/alerts/panic` | Trigger real-time panic alert |
-| **GET** | `/api/alerts/all` | Fetch all alerts |
+| **GET** | `/api/alerts` | Fetch all alerts |
+| **DELETE** | `/api/alerts/{id}` | Resolve and delete an alert |
+| **GET** | `/api/zones` | Fetch all warning and restricted geofences |
+| **POST** | `/api/zones` | Create a new warning geofence polygon |
 
 ---
 

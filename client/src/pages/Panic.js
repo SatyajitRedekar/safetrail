@@ -38,7 +38,7 @@ function Panic() {
   }, []);
 
   const triggerOfflineSMS = (lat, lon) => {
-    const message = `[EMERGENCY SOS - SafeTrail] Need Help! My Location: Lat ${lat ? lat.toFixed(5) : 'Unknown'}, Lon ${lon ? lon.toFixed(5) : 'Unknown'}. Digital ID: ${digitalId}`;
+    const message = `[EMERGENCY SOS - SafeTravel] Need Help! My Location: Lat ${lat ? lat.toFixed(5) : 'Unknown'}, Lon ${lon ? lon.toFixed(5) : 'Unknown'}. Digital ID: ${digitalId}`;
     setStatus({ success: false, message: "No internet. Triggering Offline SMS..." });
     addToast('Opening SMS for Offline SOS', 'error');
     setTimeout(() => { window.location.href = `sms:112?body=${encodeURIComponent(message)}`; setLoading(false); }, 1500);

@@ -1,4 +1,4 @@
--- Useful Queries for SafeTrail System
+-- Useful Queries for SafeTravel System
 
 -- Get all active tourists
 SELECT * FROM tourists ORDER BY created_at DESC;
